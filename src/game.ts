@@ -1,28 +1,28 @@
-import { GameScene } from "./gameScene";
 import { WelcomeScene } from "./welcomeScene";
+import { GameScene } from "./gameScene";
 import { ScoreScene } from "./scoreScene";
 
-const config: Phaser.Types.Core.GameConfig = {
-  title: "Game",
-  width: 800,
-  height: 600,
-  parent: "game",
-  scene: [WelcomeScene, GameScene, ScoreScene],
-  physics: {
-    default: "arcade",
-    arcade: {
-      debug: false
-    }
-  },
-  backgroundColor: "#000033"
+const gameConfig: Phaser.Types.Core.GameConfig = {
+    title: "Nie ma problemu",
+    width: 1344,
+    height: 720,
+    parent: "game",
+    scene: [WelcomeScene, GameScene, ScoreScene],
+    physics: {
+        default: "arcade",
+        arcade: {
+            debug: false
+        }
+    },
+    backgroundColor: "#000000"
 };
 
-export class StarfallGame extends Phaser.Game {    
-  constructor(config: Phaser.Types.Core.GameConfig) {
-      super(config);
+export class NieMaProblemuGame extends Phaser.Game {
+    constructor(config: Phaser.Types.Core.GameConfig) {
+        super(config);
     }
 }
 
 window.onload = () => {
-    let game = new StarfallGame(config);
+    let game = new NieMaProblemuGame(gameConfig);
 };

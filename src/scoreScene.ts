@@ -1,3 +1,5 @@
+import "phaser";
+
 export class ScoreScene extends Phaser.Scene {
   score: number;
   result: Phaser.GameObjects.Text;
