@@ -1,6 +1,9 @@
 import "phaser";
+import { Majster } from './majster';
 
 export class GameScene extends Phaser.Scene {
+    private majster: Majster;
+    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
     constructor() {
         super({
@@ -13,10 +16,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload(): void {
-        
+        this.load.image('majster', Majster.image)
     }
 
     create(): void {
+        this.cursors = this.input.keyboard.createCursorKeys();
+
         let graphics = this.add.graphics();
 
         let outerArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 0, 144, 576);
@@ -35,9 +40,12 @@ export class GameScene extends Phaser.Scene {
 
         graphics.fillStyle(0x000000);
         graphics.fillRectShape(dialogArea);
+
+        this.majster = new Majster(this.physics.add.sprite(16,32,'majster'))
+        this.majster.setPosition(160, 30);
     }
 
     update(): void {
-
+        this.majster.move(this.cursors);
     }
 };
