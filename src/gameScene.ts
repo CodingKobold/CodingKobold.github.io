@@ -100,7 +100,17 @@ export class GameScene extends Phaser.Scene {
     }
 
     prepareEquipment() {
-        this.add.text(900, 50, "Ekwipunek Majstra:", { font: '18px Consolas' });
+        this.add.text(900, 300, "Ekwipunek Majstra:", { font: '24px Consolas' });
+
+        let y = 350;
+        let ySpacing = 40;
+        this.equipmentText = {};
+
+        Array.from(Array(5).keys()).forEach(x => {
+            this.equipmentText[x] = this.add.text(900, y, ""), { font: '24px Consolas' };
+            y += ySpacing;
+        })
+
         this.updateEquipment();
     }
 
@@ -115,8 +125,8 @@ export class GameScene extends Phaser.Scene {
         this.gameTime = new GameTime();
         this.gameOverEvent = this.time.delayedCall(this.gameDuration, this.onGameOverEvent, [], this);
 
-        this.add.text(900, 10,  "Czas do zamknięcia:", { font: '24px Consolas' });
-        this.remainingTimeText = this.add.text(1150, 10, this.gameTime.getTime(),  { font: '24px Consolas Bold', fill: 'green' });
+        this.add.text(900, 20,  "Czas do zamknięcia:", { font: '24px Consolas' });
+        this.remainingTimeText = this.add.text(1180, 12, this.gameTime.getTime(),  { font: '36px Consolas Bold', fill: 'green' });
     }
 
     private prepareDialogs() {
@@ -458,22 +468,16 @@ export class GameScene extends Phaser.Scene {
     }
 
     private updateEquipment(): void {
-        this.equipmentText = {};
-        
-        let y = 80;
-        let ySpacing = 30;
-
-        if (this.majster.maxItemNumber === 0) {
-            this.equipmentText[0] = this.add.text(900, y, "Pusto!!!") , { font: '18px Consolas' }
+        for (let i = 0; i < 5; i++) {
+            this.equipmentText[i].setText("");
         }
 
-        console.log(this.majster.maxItemNumber);
-        
-        Array.from(Array(this.majster.maxItemNumber).keys()).forEach(x => {
-            
-            this.equipmentText[x] = this.add.text(900, y, x + 1 + ". ....................") , { font: '18px Consolas' }
-            
-            y += ySpacing;
-        })
+        for (let i = 0; i < this.majster.maxItemNumber; i++) {
+            if (this.majster.equipment.length > i) {
+                this.equipmentText[i].setText(`${i + 1}. ${this.majster.equipment[i]}`);
+            } else {
+                this.equipmentText[i].setText(`${i + 1}. ......................`);
+            }
+        }
     }
 };
