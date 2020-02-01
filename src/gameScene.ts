@@ -4,13 +4,21 @@ import { Dialog } from "./dialog";
 
 import { ItemType } from "./itemType.enum";
 import { GameTime } from './gameTime';
+import { GameWindowFocus } from "./gameWindowFocus.enum";
 
 export class GameScene extends Phaser.Scene {
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-    private graphics: Phaser.GameObjects.Graphics;
+
+    // scene related
+    private currentGameWindow: GameWindowFocus;
 
     // majster related
     private majster: Majster;
+    private actionKey: Phaser.Input.Keyboard.Key;
+
+    // graphics related
+    private graphics: Phaser.GameObjects.Graphics;
+    private walls: Phaser.Physics.Arcade.StaticGroup;
 
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
@@ -20,8 +28,8 @@ export class GameScene extends Phaser.Scene {
 
     // dialog related
     private dialog: Dialog;
-    private dialogText: Phaser.GameObjects.Text;
-    private walls: Phaser.Physics.Arcade.StaticGroup;
+    private clientDialogText: Phaser.GameObjects.Text;
+    private majsterDialogText: Phaser.GameObjects.Text;
 
     // score related
     private score: number = 100;
@@ -34,6 +42,7 @@ export class GameScene extends Phaser.Scene {
 
     init(): void {
         this.graphics = this.add.graphics();
+        this.currentGameWindow = GameWindowFocus.Majster;
     }
 
     preload(): void {         
@@ -44,20 +53,34 @@ export class GameScene extends Phaser.Scene {
     create(): void {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
+        
         this.drawRoomInitial();
         this.prepareMajster();
         this.prepareDialog();
         this.prepareTime();
+
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.loadDialog();
+        this.actionKey = this.cursors.space;
 
         this.physics.add.collider(this.majster.majster, this.walls);
-
     }
     
     update(): void {
         this.updateTime();
-        this.majster.move(this.cursors);
+
+        if (this.currentGameWindow === GameWindowFocus.Majster) {
+            this.majster.move(this.cursors);
+
+            if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
+                this.loadRequest(ItemType.Boot);
+            }
+        }
+        else if (this.currentGameWindow === GameWindowFocus.Dialog) {
+            if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
+                this.loadResponse();
+                this.currentGameWindow = GameWindowFocus.Majster;
+            }
+        }
     }
 
     private prepareGameShapes() {
@@ -89,8 +112,8 @@ export class GameScene extends Phaser.Scene {
 
     private prepareDialog() {
         this.dialog = new Dialog();
-        this.dialog.create(ItemType.Boot);
-        this.dialogText = this.add.text(50, 606, "", { font: '20px Consolas', fill: '#FFFFFF' });
+        this.clientDialogText = this.add.text(50, 606, "", { font: '24px Consolas', fill: '#FFFFFF' });
+        this.majsterDialogText = this.add.text(50, 646, "", { font: '24px Consolas', fill: '#FFFF00' });
     }
 
     prepareMajster() {
@@ -98,16 +121,7 @@ export class GameScene extends Phaser.Scene {
         this.majster.setPosition(250, 100);
     }
 
-    private loadDialog() {
-        this.time.addEvent({delay: 50, callback: this.updateDialog, callbackScope: this, repeat: 50});
-    }
-
-    private updateDialog() {
-        this.dialog.nextLetter();
-        this.dialogText.setText(this.dialog.text);
-    }
-
-    private loadRoomAssets(){
+    private loadRoomAssets() {
         this.load.image('wall-left-top-corner', 'images/wall/left-top-corner.png');
         this.load.image('wall-right-top-corner', 'images/wall/right-top-corner.png');
         this.load.image('wall-left', 'images/wall/left.png');
@@ -272,5 +286,34 @@ export class GameScene extends Phaser.Scene {
 
     onGameOverEvent(): void {
         this.scene.start('ScoreScene', { score: this.score });
-    }       
+    }
+
+    private loadRequest(item: ItemType): void {
+        this.currentGameWindow = GameWindowFocus.Dialog;
+        let dialogLength = this.dialog.createRequest(item);
+        this.time.addEvent({delay: 50, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+    }
+
+    private updateRequest(dialogLength: number): void {
+        this.dialog.nextLetter();
+        this.clientDialogText.setText(this.dialog.text);
+
+        if (this.clientDialogText.text.length === dialogLength) {
+            this.time.addEvent({delay: 300, callback: this.showTakeAssignmentText, callbackScope: this });
+        }
+    }
+
+    private showTakeAssignmentText(): void {
+        this.majsterDialogText.setText("Przyjmij zlecenie");
+    }
+
+    private loadResponse() {
+        let dialogLength = this.dialog.createResponse();
+        this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+    }
+
+    private updateResponse(): void {
+        this.dialog.nextLetter();
+        this.majsterDialogText.setText(this.dialog.text);
+    }
 };
