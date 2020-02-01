@@ -84,6 +84,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('wall-brick-center', 'images/wall/brick-center.png');
         this.load.image('wall-right-small', 'images/wall/right-small.png');
         this.load.image('wall-brick-left', 'images/wall/brick-left.png');
+        this.load.image('wall-brick-right', 'images/wall/brick-right.png');
+        this.load.image('wall-brick-right-center', 'images/wall/brick-right-center.png');
     }
 
     drawRoomInitial() {
@@ -118,5 +120,22 @@ export class GameScene extends Phaser.Scene {
         }  
 
         this.add.image(leftStartPoint, bottomStopPoint, "wall-brick-left");
+        this.add.image(leftStartPoint, bottomStopPoint-24, "wall-right-top-corner").setAngle(180);
+
+        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
+            this.add.image(i, bottomStopPoint-24, "wall-top").setAngle(180);
+        } 
+
+        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
+            this.add.image(i, bottomStopPoint, "wall-brick-center");
+        } 
+
+        this.add.image(rightStopPoint, bottomStopPoint, "wall-brick-right");
+
+        this.add.image(rightStopPoint, bottomStopPoint-24, "wall-left-top-corner").setAngle(180);
+
+        for (var i=topStartPoint+16; i<=bottomStopPoint-32; i+=16){
+            this.add.image(rightStopPoint, i, "wall-brick-right-center");
+        }
     }
 };
