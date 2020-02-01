@@ -1,4 +1,4 @@
-import { ItemType } from "./itemType.enum";
+import { RepairedItemType } from "./repairedItemType.enum";
 
 export class Dialog {
     text: string = "";
@@ -14,9 +14,9 @@ export class Dialog {
     private majsterResponse: string = "Nie ma problemu.";
 
     private currentRequest: string;
-    private currentIndex: integer;
+    private currentIndex: number;
 
-    createRequest(item: ItemType): number {
+    createRequest(item: RepairedItemType): number {
         this.text = "";
         this.currentIndex = 0;
         this.currentRequest = this.generateRequest(item);
@@ -41,7 +41,7 @@ export class Dialog {
         this.text = this.currentRequest.slice(0, this.currentIndex);
     }
 
-    private generateRequest(item: ItemType): string {
+    private generateRequest(item: RepairedItemType): string {
         let chosenRequest = this.requests[Math.floor(Math.random() * this.requests.length)];
         return `- ${chosenRequest}`.replace("[...]", item);
     }

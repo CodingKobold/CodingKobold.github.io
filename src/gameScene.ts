@@ -2,9 +2,10 @@ import "phaser";
 import { Majster } from './majster';
 import { Dialog } from "./dialog";
 
-import { ItemType } from "./itemType.enum";
 import { GameTime } from './gameTime';
 import { GameWindowFocus } from "./gameWindowFocus.enum";
+import { RepairedItem } from './repairedItem';
+import { RepairedItemType } from './repairedItemType.enum';
 
 export class GameScene extends Phaser.Scene {
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -63,6 +64,7 @@ export class GameScene extends Phaser.Scene {
         this.actionKey = this.cursors.space;
 
         this.physics.add.collider(this.majster.majster, this.walls);
+        new RepairedItem();
     }
     
     update(): void {
@@ -72,7 +74,7 @@ export class GameScene extends Phaser.Scene {
             this.majster.move(this.cursors);
 
             if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
-                this.loadRequest(ItemType.Boot);
+                this.loadRequest(RepairedItemType.Boot);
             }
         }
         else if (this.currentGameWindow === GameWindowFocus.Dialog) {
@@ -161,8 +163,6 @@ export class GameScene extends Phaser.Scene {
                 this.add.image(i, j, "floor-"+randNumber);
             }
         }
-
-        
 
         //środkowy murek
         for (var i=leftStartPoint + 27; i<=rightStopPoint - 16; i += 16) {
@@ -266,11 +266,6 @@ export class GameScene extends Phaser.Scene {
 
         this.walls.create(doorStartPointLeft+11, doorStartPointTop-88, "wall-right-small");
         this.walls.create(doorAreaLenght+5, doorStartPointTop-88, "wall-right-small").setAngle(180);
-        
-
-
-
-
     }
 
     private updateTime(){
@@ -288,7 +283,7 @@ export class GameScene extends Phaser.Scene {
         this.scene.start('ScoreScene', { score: this.score });
     }
 
-    private loadRequest(item: ItemType): void {
+    private loadRequest(item: RepairedItemType): void {
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.dialog.createRequest(item);
         this.time.addEvent({delay: 50, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
