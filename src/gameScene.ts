@@ -8,17 +8,18 @@ import { RepairedItem } from './repairedItem';
 import { RepairedItemType } from './repairedItemType.enum';
 
 export class GameScene extends Phaser.Scene {
-    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-
     // scene related
     private currentGameWindow: GameWindowFocus;
     private orderTaken: boolean;
 
+    // keyboard related
+    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    private actionKey: Phaser.Input.Keyboard.Key;
+    
     // majster related
     private majster: Majster;
-    private actionKey: Phaser.Input.Keyboard.Key;
 
-    // graphics related
+    // objects related
     private graphics: Phaser.GameObjects.Graphics;
     private walls: Phaser.Physics.Arcade.StaticGroup;
     private entrance: Phaser.Physics.Arcade.StaticGroup;
@@ -34,6 +35,7 @@ export class GameScene extends Phaser.Scene {
     private responseDialog: Dialog;
     private clientDialogText: Phaser.GameObjects.Text;
     private majsterDialogText: Phaser.GameObjects.Text;
+    private nieMaProblemuSaid: boolean;
 
     // score related
     private score: number = 100;
@@ -61,18 +63,13 @@ export class GameScene extends Phaser.Scene {
     create(): void {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
-        
-        this.drawRoomInitial();
+
         this.prepareMajster();
+        this.preparePhysics();
+        this.drawRoomInitial();
         this.prepareDialogs();
         this.prepareTime();
-
-        this.cursors = this.input.keyboard.createCursorKeys();
-        this.actionKey = this.cursors.space;
-
-        this.physics.add.collider(this.majster.majster, this.walls);
-        this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
-        this.physics.add.sprite(16,48, 'majster');
+        this.prepareInput();
 
         this.anims.create({
             key: 'left',
@@ -80,8 +77,6 @@ export class GameScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
-        
-        new RepairedItem();
     }
     
     update(): void {
@@ -137,6 +132,20 @@ export class GameScene extends Phaser.Scene {
         this.majster.setPosition(250, 100);
     }
 
+    prepareInput(): void {
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.actionKey = this.cursors.space;
+    }
+
+    preparePhysics(): void {
+        this.walls = this.physics.add.staticGroup();
+        this.entrance = this.physics.add.staticGroup();
+
+        this.physics.add.collider(this.majster.majster, this.walls);
+        this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
+        this.physics.add.sprite(16, 48, 'majster');
+    }
+
     private loadRoomAssets() {
         this.load.image('wall-left-top-corner', 'images/wall/left-top-corner.png');
         this.load.image('wall-right-top-corner', 'images/wall/right-top-corner.png');
@@ -163,9 +172,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     private drawRoomInitial() {
-        this.walls = this.physics.add.staticGroup();
-        this.entrance = this.physics.add.staticGroup();
-
         var topStartPoint = 24;
         var bottomStopPoint = 480;
         var leftStartPoint = 168;
@@ -298,13 +304,14 @@ export class GameScene extends Phaser.Scene {
         this.scene.start('ScoreScene', { score: this.score });
     }
 
-    private takeOrder(majster, entrance) {
+    private takeOrder(majster: Phaser.GameObjects.GameObject, entrance: Phaser.GameObjects.GameObject) {
         if (this.orderTaken === true) {
             return;
         }
 
         this.orderTaken = true;
         this.currentGameWindow = GameWindowFocus.Dialog;
+        this.nieMaProblemuSaid = false;
         this.majster.stop();
 
         // TODO: Get item from entrance body
@@ -328,10 +335,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     private showTakeAssignmentText(): void {
-        this.majsterDialogText.setText("Przyjmij zlecenie");
+        if (!this.nieMaProblemuSaid) {
+            this.majsterDialogText.setText("Przyjmij zlecenie");
+        }
     }
 
     private loadResponse() {
+        this.nieMaProblemuSaid = true;
         let dialogLength = this.responseDialog.createResponse();
         this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
     }
