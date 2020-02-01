@@ -57,6 +57,7 @@ export class GameScene extends Phaser.Scene {
 
     preload(): void {         
         this.loadRoomAssets();
+        this.loadGrassAssets();
         this.load.spritesheet('majster', Majster.image, { frameWidth: 32, frameHeight: 32 });
         this.load.image('dialog-box', 'images/dialog-box.png');
         this.load.image('client1', 'images/clients/client1.png');
@@ -68,6 +69,7 @@ export class GameScene extends Phaser.Scene {
     create(): void {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
+        this.drawGrassInitial();
         this.drawRoomInitial();
         this.prepareInput();
         this.prepareMajster();
@@ -110,16 +112,16 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareGameShapes() {
-        let outerArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 0, 144, 576);
-        let workshopArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(144, 0, 736, 576);
+        //let outerArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 0, 144, 576);
+        //let workshopArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(144, 0, 736, 576);
         let itemsArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(880, 0, 464, 720);
         let dialogArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 576, 880, 144);
         
-        this.graphics.fillStyle(0x00ff00);
-        this.graphics.fillRectShape(outerArea);
+        // this.graphics.fillStyle(0x00ff00);
+        // this.graphics.fillRectShape(outerArea);
 
-        this.graphics.fillStyle(0xffff00);
-        this.graphics.fillRectShape(workshopArea);
+        // this.graphics.fillStyle(0xffff00);
+        // this.graphics.fillRectShape(workshopArea);
 
         this.graphics.fillStyle(0x0000ff);
         this.graphics.fillRectShape(itemsArea);
@@ -137,7 +139,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareDialogs() {
-        this.add.image(440, 648, 'dialog-box').setDisplaySize(880,144);
+        this.add.image(443, 648, 'dialog-box').setDisplaySize(890,144);
 
         this.requestDialog = new Dialog();
         this.responseDialog = new Dialog();
@@ -160,6 +162,24 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.majster.majster, this.walls);
         this.physics.add.collider(this.majster.majster, this.workbench);
         this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
+    }
+
+    private loadGrassAssets(){
+        this.load.image('grass1', 'images/grass/grass1.png');
+        this.load.image('grass2', 'images/grass/grass2.png');
+        this.load.image('grass3', 'images/grass/grass3.png');
+        this.load.image('grass4', 'images/grass/grass4.png');
+        this.load.image('grass5', 'images/grass/grass5.png');
+    }
+
+    private drawGrassInitial(){
+        for (var j = 0; j<=880; j+=16){
+            for (var i = 0; i<=880; i+=16){
+                var randNumber = Math.floor(Math.random() * 5) + 1;
+                this.add.image(i, j, "grass"+ randNumber);
+            }
+        }
+        
     }
 
     private loadRoomAssets() {
