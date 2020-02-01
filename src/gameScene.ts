@@ -11,6 +11,7 @@ export class GameScene extends Phaser.Scene {
 
     // scene related
     private currentGameWindow: GameWindowFocus;
+    private orderTaken: boolean;
 
     // majster related
     private majster: Majster;
@@ -19,6 +20,7 @@ export class GameScene extends Phaser.Scene {
     // graphics related
     private graphics: Phaser.GameObjects.Graphics;
     private walls: Phaser.Physics.Arcade.StaticGroup;
+    private entrance: Phaser.Physics.Arcade.StaticGroup;
 
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
@@ -27,7 +29,8 @@ export class GameScene extends Phaser.Scene {
     private gameOverEvent: Phaser.Time.TimerEvent;
 
     // dialog related
-    private dialog: Dialog;
+    private requestDialog: Dialog;
+    private responseDialog: Dialog;
     private clientDialogText: Phaser.GameObjects.Text;
     private majsterDialogText: Phaser.GameObjects.Text;
 
@@ -43,6 +46,7 @@ export class GameScene extends Phaser.Scene {
     init(): void {
         this.graphics = this.add.graphics();
         this.currentGameWindow = GameWindowFocus.Majster;
+        this.orderTaken = false;
     }
 
     preload(): void {         
@@ -56,13 +60,14 @@ export class GameScene extends Phaser.Scene {
         
         this.drawRoomInitial();
         this.prepareMajster();
-        this.prepareDialog();
+        this.prepareDialogs();
         this.prepareTime();
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.actionKey = this.cursors.space;
 
         this.physics.add.collider(this.majster.majster, this.walls);
+        this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
     }
     
     update(): void {
@@ -70,10 +75,6 @@ export class GameScene extends Phaser.Scene {
 
         if (this.currentGameWindow === GameWindowFocus.Majster) {
             this.majster.move(this.cursors);
-
-            if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
-                this.loadRequest(ItemType.Boot);
-            }
         }
         else if (this.currentGameWindow === GameWindowFocus.Dialog) {
             if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
@@ -110,8 +111,9 @@ export class GameScene extends Phaser.Scene {
         this.remainingTimeText = this.add.text(1150, 10, this.gameTime.getTime(),  { font: '24px Consolas Bold', fill: 'green' });
     }
 
-    private prepareDialog() {
-        this.dialog = new Dialog();
+    private prepareDialogs() {
+        this.requestDialog = new Dialog();
+        this.responseDialog = new Dialog();
         this.clientDialogText = this.add.text(50, 606, "", { font: '24px Consolas', fill: '#FFFFFF' });
         this.majsterDialogText = this.add.text(50, 646, "", { font: '24px Consolas', fill: '#FFFF00' });
     }
@@ -148,6 +150,7 @@ export class GameScene extends Phaser.Scene {
 
     private drawRoomInitial() {
         this.walls = this.physics.add.staticGroup();
+        this.entrance = this.physics.add.staticGroup();
 
         var topStartPoint = 24;
         var bottomStopPoint = 480;
@@ -236,7 +239,7 @@ export class GameScene extends Phaser.Scene {
         //wejście-podłoga!!!
         for (var j = 42 ;j<=90; j+=16){
             for(var i = 16; i<=128; i+=16){
-                this.add.image(doorStartPointLeft+i, doorStartPointTop-j, "floor-1");
+                this.entrance.create(doorStartPointLeft+i, doorStartPointTop-j, "floor-1");
             }
         }
 
@@ -288,15 +291,29 @@ export class GameScene extends Phaser.Scene {
         this.scene.start('ScoreScene', { score: this.score });
     }
 
+    private takeOrder(majster, entrance) {
+        if (this.orderTaken === true) {
+            return;
+        }
+
+        this.orderTaken = true;
+        this.currentGameWindow = GameWindowFocus.Dialog;
+        this.majster.stop();
+
+        // TODO: Get item from entrance body
+        let item: ItemType = ItemType.Boot;
+        this.loadRequest(item);
+    }
+
     private loadRequest(item: ItemType): void {
         this.currentGameWindow = GameWindowFocus.Dialog;
-        let dialogLength = this.dialog.createRequest(item);
+        let dialogLength = this.requestDialog.createRequest(item);
         this.time.addEvent({delay: 50, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
     }
 
     private updateRequest(dialogLength: number): void {
-        this.dialog.nextLetter();
-        this.clientDialogText.setText(this.dialog.text);
+        this.requestDialog.nextLetter();
+        this.clientDialogText.setText(this.requestDialog.text);
 
         if (this.clientDialogText.text.length === dialogLength) {
             this.time.addEvent({delay: 300, callback: this.showTakeAssignmentText, callbackScope: this });
@@ -308,12 +325,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     private loadResponse() {
-        let dialogLength = this.dialog.createResponse();
+        let dialogLength = this.responseDialog.createResponse();
         this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
     }
 
     private updateResponse(): void {
-        this.dialog.nextLetter();
-        this.majsterDialogText.setText(this.dialog.text);
+        this.responseDialog.nextLetter();
+        this.majsterDialogText.setText(this.responseDialog.text);
     }
 };

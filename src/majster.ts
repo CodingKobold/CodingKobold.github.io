@@ -35,5 +35,9 @@ export class Majster {
     
     setPosition(x: number, y: number): void{
         this.majster.setPosition(x, y);
-    }
+	}
+	
+	stop(): void {
+		this.majster.setVelocity(0, 0);
+	}
 }
