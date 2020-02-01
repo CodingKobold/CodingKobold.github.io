@@ -58,6 +58,7 @@ export class GameScene extends Phaser.Scene {
     preload(): void {         
         this.loadRoomAssets();
         this.load.spritesheet('majster', Majster.image, { frameWidth: 32, frameHeight: 32 });
+        this.load.image('dialog-box', 'images/dialog-box.png');
     }
 
     create(): void {
@@ -142,10 +143,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareDialogs() {
+        this.add.image(440, 648, 'dialog-box').setDisplaySize(880,144);
+
         this.requestDialog = new Dialog();
         this.responseDialog = new Dialog();
-        this.clientDialogText = this.add.text(50, 606, "", { font: '24px Consolas', fill: '#FFFFFF' });
-        this.majsterDialogText = this.add.text(50, 646, "", { font: '24px Consolas', fill: '#FFFF00' });
+        this.clientDialogText = this.add.text(50, 606, "", { font: '24px Consolas', fill: '#050505' });
+        this.majsterDialogText = this.add.text(50, 646, "", { font: '24px Consolas', fill: '#ff0000' });
     }
 
     prepareMajster() {
