@@ -112,22 +112,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareGameShapes() {
-        //let outerArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 0, 144, 576);
-        //let workshopArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(144, 0, 736, 576);
         let itemsArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(880, 0, 464, 720);
-        let dialogArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 576, 880, 144);
-        
-        // this.graphics.fillStyle(0x00ff00);
-        // this.graphics.fillRectShape(outerArea);
-
-        // this.graphics.fillStyle(0xffff00);
-        // this.graphics.fillRectShape(workshopArea);
-
-        this.graphics.fillStyle(0x0000ff);
-        this.graphics.fillRectShape(itemsArea);
 
         this.graphics.fillStyle(0x000000);
-        this.graphics.fillRectShape(dialogArea);
+        this.graphics.fillRectShape(itemsArea);
     }
 
     private prepareTime() {
