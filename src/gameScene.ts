@@ -59,6 +59,10 @@ export class GameScene extends Phaser.Scene {
         this.loadRoomAssets();
         this.load.spritesheet('majster', Majster.image, { frameWidth: 32, frameHeight: 32 });
         this.load.image('dialog-box', 'images/dialog-box.png');
+        this.load.image('client1', 'images/clients/client1.png');
+        this.load.image('client2', 'images/clients/client2.png');
+        this.load.image('client3', 'images/clients/client3.png');
+        this.load.image('client4', 'images/clients/client4.png');
     }
 
     create(): void {
@@ -137,8 +141,8 @@ export class GameScene extends Phaser.Scene {
 
         this.requestDialog = new Dialog();
         this.responseDialog = new Dialog();
-        this.clientDialogText = this.add.text(50, 606, "", { font: '24px Consolas', fill: '#050505' });
-        this.majsterDialogText = this.add.text(50, 646, "", { font: '24px Consolas', fill: '#ff0000' });
+        this.clientDialogText = this.add.text(130, 606, "", { font: '24px Consolas', fill: '#050505' });
+        this.majsterDialogText = this.add.text(130, 646, "", { font: '24px Consolas', fill: '#ff0000' });
     }
 
     prepareMajster() {
@@ -359,6 +363,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     private loadRequest(item: RepairedItemType): void {
+        var randNumber = Math.floor(Math.random() * 4) + 1;
+        this.add.image(66, 646, "client"+randNumber).setDisplaySize(80,80);
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.requestDialog.createRequest(item);
         this.time.addEvent({delay: 50, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
