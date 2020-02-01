@@ -3,13 +3,14 @@ import { GameScene } from "./gameScene";
 import { ScoreScene } from "./scoreScene";
 import { ItemListScene } from "./itemListScene";
 import { ItemSelectionScene } from "./itemSelectionScene";
+import { HammeringScene } from "./hammeringScene";
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     title: "Nie ma problemu",
     width: 1344,
     height: 720,
     parent: "game",
-    scene: [WelcomeScene, GameScene, ScoreScene, ItemSelectionScene],
+    scene: [WelcomeScene, GameScene, ScoreScene, ItemSelectionScene, HammeringScene],
     physics: {
         default: "arcade",
         arcade: {
