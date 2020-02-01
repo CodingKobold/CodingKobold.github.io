@@ -83,32 +83,40 @@ export class GameScene extends Phaser.Scene {
 
         this.load.image('wall-brick-center', 'images/wall/brick-center.png');
         this.load.image('wall-right-small', 'images/wall/right-small.png');
+        this.load.image('wall-brick-left', 'images/wall/brick-left.png');
     }
 
     drawRoomInitial() {
-        this.add.image(152, 8, "wall-left-top-corner");
-        this.add.image(872, 8, "wall-right-top-corner");
+        var topStartPoint = 32;
+        var bottomStopPoint = 560;
+        var leftStartPoint = 168;
+        var rightStopPoint = 840; //16 * x +12
 
-        for (var i=168; i<=856; i+=16){
-            this.add.image(i, 8, "wall-top");
+        this.add.image(leftStartPoint, topStartPoint, "wall-left-top-corner");
+        this.add.image(rightStopPoint, topStartPoint, "wall-right-top-corner");
+
+        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
+            this.add.image(i, topStartPoint, "wall-top");
         }
 
-        for (var i=168; i<=856; i+=16){
-            this.add.image(i, 20, "wall-bottom-small");
+        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
+            this.add.image(i, topStartPoint+12, "wall-bottom-small");
         }
 
-        for (var i=179; i<=856; i+=16){
-            this.add.image(i, 38, "wall-brick-center");
+        for (var i=leftStartPoint+27; i<=rightStopPoint-16; i+=16){
+            this.add.image(i, topStartPoint+30, "wall-brick-center");
         }
 
-        this.add.image(163, 20, "wall-middle-right-corner");
+        this.add.image(leftStartPoint+11, topStartPoint+16, "wall-middle-right-corner");
         
-        for (var i=24; i<=344; i+=16){
-            this.add.image(152, i, "wall-left");
+        for (var i=topStartPoint+8; i<=bottomStopPoint-16; i+=16){
+            this.add.image(leftStartPoint, i, "wall-left");
         }
 
-        for (var i=30; i<=344; i+=16){
-            this.add.image(163, i, "wall-right-small");
+        for (var i=topStartPoint+22; i<=bottomStopPoint-16; i+=16){
+            this.add.image(leftStartPoint+11, i, "wall-right-small");
         }  
+
+        this.add.image(leftStartPoint, bottomStopPoint, "wall-brick-left");
     }
 };
