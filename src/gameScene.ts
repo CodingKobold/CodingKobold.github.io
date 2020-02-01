@@ -172,6 +172,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('grass5', 'images/grass/grass5.png');
         this.load.image('tree1', 'images/grass/tree1.png');
         this.load.image('water1', 'images/grass/water1.png');
+        this.load.image('water2', 'images/grass/water2.png');
     }
 
     private drawGrassInitial(){
@@ -183,6 +184,7 @@ export class GameScene extends Phaser.Scene {
         }
         this.add.image(75, 22, "tree1");
         this.add.image(40, 430, "water1");
+        this.add.image(23, 255, "water2");
     }
 
     private loadRoomAssets() {
