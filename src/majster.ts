@@ -1,5 +1,10 @@
+import { RepairedItem } from './repairedItem';
+import { ItemType } from './ItemType.enum';
+
 export class Majster {
 	majster: Phaser.Physics.Arcade.Sprite;
+	repairedItem: RepairedItem = null;
+	equipment: ItemType[];
 
 	static image: string = 'images/majster.png';
 
@@ -37,7 +42,11 @@ export class Majster {
 			this.majster.anims.stop();
 		}
     }
-    
+
+	acceptRequest(repairedItem: RepairedItem): void{
+		this.repairedItem = repairedItem;
+	}
+
     setPosition(x: number, y: number): void{
         this.majster.setPosition(x, y);
 	}
