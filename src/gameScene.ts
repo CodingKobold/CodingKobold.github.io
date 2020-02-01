@@ -70,7 +70,7 @@ export class GameScene extends Phaser.Scene {
     private prepareDialog() {
         this.dialog = new Dialog();
         this.dialog.create(ItemType.Boot);
-        this.dialogText = this.add.text(50, 600, "", { font: '20px Consolas', fill: '#FFFFFF' });
+        this.dialogText = this.add.text(50, 606, "", { font: '20px Consolas', fill: '#FFFFFF' });
     }
 
     prepareMajster() {
@@ -112,8 +112,6 @@ export class GameScene extends Phaser.Scene {
         var bottomStopPoint = 576;
         var leftStartPoint = 145;
         var rightStopPoint = 879; //16 * x +12
-
-        console.log("elo")
 
         //środkowy murek
         for (var i=leftStartPoint + 27; i<=rightStopPoint - 16; i += 16) {
