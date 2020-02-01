@@ -21,6 +21,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload(): void {
+        this.loadRoomAssets();
         this.load.image('majster', Majster.image)
     }
 
@@ -55,6 +56,7 @@ export class GameScene extends Phaser.Scene {
         this.dialogText = this.add.text(50, 600, "", { font: '20px Consolas', fill: '#FFFFFF' });
 
         this.loadDialog();
+        this.drawRoomInitial();
     }
 
     update(): void {
@@ -68,5 +70,45 @@ export class GameScene extends Phaser.Scene {
     private updateDialog() {
         this.dialog.nextLetter();
         this.dialogText.setText(this.dialog.text);
+    }
+
+    loadRoomAssets(){
+        this.load.image('wall-left-top-corner', 'images/wall/left-top-corner.png');
+        this.load.image('wall-right-top-corner', 'images/wall/right-top-corner.png');
+        this.load.image('wall-left', 'images/wall/left.png');
+        this.load.image('wall-top', 'images/wall/top.png');
+        this.load.image('wall-bottom', 'images/wall/bottom.png');
+        this.load.image('wall-bottom-small', 'images/wall/bottom-small.png');
+        this.load.image('wall-middle-right-corner', 'images/wall/middle-right-corner.png');
+
+        this.load.image('wall-brick-center', 'images/wall/brick-center.png');
+        this.load.image('wall-right-small', 'images/wall/right-small.png');
+    }
+
+    drawRoomInitial() {
+        this.add.image(152, 8, "wall-left-top-corner");
+        this.add.image(872, 8, "wall-right-top-corner");
+
+        for (var i=168; i<=856; i+=16){
+            this.add.image(i, 8, "wall-top");
+        }
+
+        for (var i=168; i<=856; i+=16){
+            this.add.image(i, 20, "wall-bottom-small");
+        }
+
+        for (var i=179; i<=856; i+=16){
+            this.add.image(i, 38, "wall-brick-center");
+        }
+
+        this.add.image(163, 20, "wall-middle-right-corner");
+        
+        for (var i=24; i<=344; i+=16){
+            this.add.image(152, i, "wall-left");
+        }
+
+        for (var i=30; i<=344; i+=16){
+            this.add.image(163, i, "wall-right-small");
+        }  
     }
 };
