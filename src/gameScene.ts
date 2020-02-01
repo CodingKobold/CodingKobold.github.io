@@ -54,29 +54,19 @@ export class GameScene extends Phaser.Scene {
 
     preload(): void {         
         this.loadRoomAssets();
-        this.load.spritesheet('majster', 
-            Majster.image,
-            { frameWidth: 16, frameHeight: 16 }
-        );
+        this.load.spritesheet('majster', Majster.image, { frameWidth: 32, frameHeight: 32 });
     }
 
     create(): void {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
 
+        this.prepareInput();
         this.prepareMajster();
         this.preparePhysics();
         this.drawRoomInitial();
         this.prepareDialogs();
         this.prepareTime();
-        this.prepareInput();
-
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('majster', { start: 0, end: 2 }),
-            frameRate: 10,
-            repeat: -1
-        });
     }
     
     update(): void {
@@ -128,8 +118,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     prepareMajster() {
-        this.majster = new Majster(this.physics.add.sprite(16,32,'majster'))
+        this.majster = new Majster(this.physics.add.sprite(32,32,'majster'))
         this.majster.setPosition(250, 100);
+        this.majster.loadAnimations(this.anims);
     }
 
     prepareInput(): void {
@@ -143,7 +134,6 @@ export class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.majster.majster, this.walls);
         this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
-        this.physics.add.sprite(16, 48, 'majster');
     }
 
     private loadRoomAssets() {
