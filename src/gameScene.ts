@@ -363,8 +363,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     private loadRequest(item: RepairedItemType): void {
-        var randNumber = Math.floor(Math.random() * 4) + 1;
-        this.add.image(66, 646, "client"+randNumber).setDisplaySize(80,80);
+        var randNumber = Math.floor(Math.random() * 3) + 1;
+        this.add.image(66, 646, "client"+randNumber).setDisplaySize(90,90);
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.requestDialog.createRequest(item);
         this.time.addEvent({delay: 50, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
