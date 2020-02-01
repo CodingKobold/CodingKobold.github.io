@@ -25,8 +25,8 @@ export class GameScene extends Phaser.Scene {
     private graphics: Phaser.GameObjects.Graphics;
     private walls: Phaser.Physics.Arcade.StaticGroup;
     private entrance: Phaser.Physics.Arcade.StaticGroup;
-    private workbench: Phaser.Physics.Arcade.StaticGroup;
-    private wordrobe: Phaser.Physics.Arcade.Sprite;
+    private workbench: Phaser.Physics.Arcade.Sprite;
+    private wardrobe: Phaser.Physics.Arcade.Sprite;
 
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
@@ -65,24 +65,13 @@ export class GameScene extends Phaser.Scene {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
         this.drawRoomInitial();
-        this.prepareRoomItems();
         this.prepareInput();
         this.prepareMajster();
+        this.prepareRoomItems();
         this.preparePhysics();
         this.prepareDialogs();
         this.prepareTime();
         this.prepareEquipment();
-        this.prepareWordrobe();
-    }
-
-    private prepareWordrobe(){
-        this.wordrobe = this.physics.add.sprite(700, 200, 'wordrobe');
-        this.physics.add.collider(this.majster.majster, this.wordrobe, this.takeTools, null, this);
-    }
-
-    takeTools() {
-        this.scene.run('ItemSelectionScene', {   majster: this.majster});
-        this.scene.switch('ItemSelectionScene');
     }
     
     update(): void {
@@ -100,6 +89,7 @@ export class GameScene extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
             this.checkClosestWorkbench();
+            this.checkClosestWardrobe();
         }
     }
 
@@ -192,8 +182,23 @@ export class GameScene extends Phaser.Scene {
         this.load.image('floor-3', 'images/wall/floor-3.png');
         this.load.image('floor-4', 'images/wall/floor-4.png');
 
-        this.load.image('workbench', 'images/furniture/workbench.png');
-        this.load.image('wordrobe', 'images/szafa.png');
+        this.load.image('carpet-1', 'images/furniture/dywan1.png');
+        this.load.image('carpet-2', 'images/furniture/dywan2.png');
+        this.load.image('carpet-3', 'images/furniture/dywan3.png');
+
+        this.load.image('computer', 'images/furniture/komputer.png');
+        this.load.image('plant', 'images/furniture/kwiatek.png');
+        this.load.image('low-table', 'images/furniture/kwiatek.png');
+        this.load.image('radio', 'images/furniture/radio.png');
+
+        this.load.image('table-1', 'images/furniture/stol1.png');
+
+        this.load.image('wardrobe-1', 'images/furniture/szafa1.png');
+        this.load.image('wardrobe-2', 'images/furniture/szafa2.png');
+        this.load.image('wardrobe-3', 'images/furniture/szafa3.png');
+
+        this.load.image('mini-wardrobe', 'images/furniture/szafeczka.png');
+        this.load.image('mini-wardrobe', 'images/furniture/szafeczka2.png');
     }
 
     private drawRoomInitial() {
@@ -318,14 +323,11 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareRoomItems() {
-        this.workbench = this.physics.add.staticGroup();
-        let workbenchStartPointLeft = 300;
-        let workbenchStartPointTop = 200;
+        this.workbench = this.physics.add.staticSprite(300, 200, 'table-1');
+        this.wardrobe = this.physics.add.staticSprite(700, 200, 'wardrobe-1');
 
-        for (var i = workbenchStartPointLeft; i <= 300 + 16 * 5; i += 16){
-            this.workbench.create(i, workbenchStartPointTop, "workbench");
-            this.workbench.create(i, workbenchStartPointTop + 16, "workbench");
-        }
+        this.physics.add.collider(this.majster.majster, this.workbench, null, null, this);
+        this.physics.add.collider(this.majster.majster, this.wardrobe, null, null, this);
     }
 
     private updateTime(){
@@ -343,7 +345,7 @@ export class GameScene extends Phaser.Scene {
         this.scene.start('ScoreScene', { score: this.score });
     }
 
-    private takeOrder(majster: Phaser.GameObjects.GameObject, entrance: Phaser.GameObjects.GameObject) {
+    private takeOrder() {
         if (this.majster.repairedItem !== null) {
             return;
         }
@@ -393,12 +395,39 @@ export class GameScene extends Phaser.Scene {
             return;
         }
 
-        let closestWorkbench = this.physics.closest(this.majster.majster, this.workbench.getChildren()) as Phaser.Physics.Arcade.Sprite;
-        let workbenchDistance = Phaser.Math.Distance.Between(this.majster.majster.x, this.majster.majster.y, closestWorkbench.x, closestWorkbench.y);            
+        let shouldUse = this.shouldUseFurniture(this.workbench);
         
-        if (workbenchDistance < 40.0){
+        if (shouldUse) {
             let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
             this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
         }
+    }
+
+    private checkClosestWardrobe(): void {
+        if (this.majster.repairedItem === null) {
+            return;
+        }
+
+        let shouldUse = this.shouldUseFurniture(this.wardrobe);
+
+        if (shouldUse) {
+            this.majster.stop();
+            this.takeTools();
+        }
+    }
+
+    private shouldUseFurniture(sprite: Phaser.Physics.Arcade.Sprite): boolean {
+        let distanceToObject = Phaser.Math.Distance.Between(this.majster.majster.x, this.majster.majster.y, sprite.x, sprite.y);            
+        
+        if (distanceToObject < 40.0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private takeTools(): void {
+        this.scene.run('ItemSelectionScene', { majster: this.majster });
+        this.scene.switch('ItemSelectionScene');
     }
 };
