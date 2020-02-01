@@ -10,7 +10,6 @@ import { RepairedItemType } from './repairedItemType.enum';
 export class GameScene extends Phaser.Scene {
     // scene related
     private currentGameWindow: GameWindowFocus;
-    private orderTaken: boolean;
 
     // keyboard related
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -49,7 +48,6 @@ export class GameScene extends Phaser.Scene {
     init(): void {
         this.graphics = this.add.graphics();
         this.currentGameWindow = GameWindowFocus.Majster;
-        this.orderTaken = false;
     }
 
     preload(): void {         
@@ -66,7 +64,6 @@ export class GameScene extends Phaser.Scene {
         this.preparePhysics();
         this.prepareDialogs();
         this.prepareTime();
-
     }
     
     update(): void {
@@ -79,6 +76,7 @@ export class GameScene extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
                 this.loadResponse();
                 this.currentGameWindow = GameWindowFocus.Majster;
+                console.log(this.majster.repairedItem);
             }
         }
     }
@@ -129,7 +127,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     preparePhysics(): void {
-
         this.physics.add.collider(this.majster.majster, this.walls);
         this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
     }
@@ -296,18 +293,16 @@ export class GameScene extends Phaser.Scene {
     }
 
     private takeOrder(majster: Phaser.GameObjects.GameObject, entrance: Phaser.GameObjects.GameObject) {
-        if (this.orderTaken === true) {
+        if (this.majster.repairedItem !== null) {
             return;
         }
 
-        this.orderTaken = true;
+        this.majster.acceptRequest(new RepairedItem())
         this.currentGameWindow = GameWindowFocus.Dialog;
         this.nieMaProblemuSaid = false;
         this.majster.stop();
 
-        // TODO: Get item from entrance body
-        let item: RepairedItemType = RepairedItemType.Boot;
-        this.loadRequest(item);
+        this.loadRequest(this.majster.repairedItem.repairedItemType);
     }
 
     private loadRequest(item: RepairedItemType): void {
