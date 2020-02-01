@@ -137,11 +137,17 @@ export class GameScene extends Phaser.Scene {
             this.add.image(rightStopPoint, i, "wall-brick-right-center");
         }
     
-        for (var i=topStartPoint+16; i<=bottomStopPoint-32; i+=16){
+        for (var i=topStartPoint+16; i<=bottomStopPoint-48; i+=16){
             this.add.image(rightStopPoint-11, i, "wall-right-small").setAngle(180);
+        }
+
+        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
+            this.add.image(i, bottomStopPoint-36, "wall-bottom-small").setAngle(180);
         }
 
         this.add.image(leftStartPoint+11, topStartPoint+12, "wall-middle-right-corner");
         this.add.image(rightStopPoint-11, topStartPoint+12, "wall-middle-left-corner");
+        this.add.image(leftStartPoint+11, bottomStopPoint-36, "wall-middle-left-corner").setAngle(180);
+        this.add.image(rightStopPoint-11, bottomStopPoint-36, "wall-middle-right-corner").setAngle(180);
     }
 };
