@@ -12,14 +12,14 @@ export class ScoreScene extends Phaser.Scene {
   }
 
   init(params: any): void {
-    this.score = params.starsCaught;
+    this.score = params.score;
   }
 
   create(): void {
     var resultText: string = 'Your score is ' + this.score + '!';
     
     this.result = this.add.text(200, 250, resultText,
-      { font: '48px Arial Bold', fill: '#FBFBAC' });
+      { font: '48px Arial Bold', fill: 'red' });
 
     var hintText: string = "Click to restart";
     
@@ -29,8 +29,8 @@ export class ScoreScene extends Phaser.Scene {
         fill: '#FBFBAC' 
       });
 
-    this.input.on('pointerdown', function (/*pointer*/) {
-      this.scene.start("WelcomeScene");
-    }, this);
+    // this.input.on('pointerdown', function (/*pointer*/) {
+    //   this.scene.start("WelcomeScene");
+    // }, this);
   }
 };

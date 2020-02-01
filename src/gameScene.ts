@@ -3,17 +3,28 @@ import { Majster } from './majster';
 import { Dialog } from "./dialog";
 
 import { ItemType } from "./itemType.enum";
+import { GameTime } from './gameTime';
 
 export class GameScene extends Phaser.Scene {
-    private majster: Majster;
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-
-    private dialog: Dialog;
-    private dialogText: Phaser.GameObjects.Text;
-
     private graphics: Phaser.GameObjects.Graphics;
 
+    // majster related
+    private majster: Majster;
+
+    // time related
+    private remainingTimeText: Phaser.GameObjects.Text;
+    private gameTime: GameTime;
+    private gameDuration: number = 2*60*1000; // 2 min
+    private gameOverEvent: Phaser.Time.TimerEvent;
+
+    // dialog related
+    private dialog: Dialog;
+    private dialogText: Phaser.GameObjects.Text;
     private walls: Phaser.Physics.Arcade.StaticGroup;
+
+    // score related
+    private score: number = 100;
 
     constructor() {
         super({
@@ -36,14 +47,16 @@ export class GameScene extends Phaser.Scene {
         this.drawRoomInitial();
         this.prepareMajster();
         this.prepareDialog();
-
+        this.prepareTime();
         this.cursors = this.input.keyboard.createCursorKeys();
         this.loadDialog();
 
         this.physics.add.collider(this.majster.majster, this.walls);
+
     }
     
     update(): void {
+        this.updateTime();
         this.majster.move(this.cursors);
     }
 
@@ -66,6 +79,14 @@ export class GameScene extends Phaser.Scene {
         this.graphics.fillRectShape(dialogArea);
     }
 
+    private prepareTime() {
+        this.gameTime = new GameTime();
+        this.gameOverEvent = this.time.delayedCall(this.gameDuration, this.onGameOverEvent, [], this);
+
+        this.add.text(900, 10,  "Czas do zamknięcia:", { font: '24px Consolas' });
+        this.remainingTimeText = this.add.text(1150, 10, this.gameTime.getTime(),  { font: '24px Consolas Bold', fill: 'green' });
+    }
+
     private prepareDialog() {
         this.dialog = new Dialog();
         this.dialog.create(ItemType.Boot);
@@ -86,7 +107,7 @@ export class GameScene extends Phaser.Scene {
         this.dialogText.setText(this.dialog.text);
     }
 
-    loadRoomAssets(){
+    private loadRoomAssets(){
         this.load.image('wall-left-top-corner', 'images/wall/left-top-corner.png');
         this.load.image('wall-right-top-corner', 'images/wall/right-top-corner.png');
         this.load.image('wall-left', 'images/wall/left.png');
@@ -109,7 +130,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('floor-2', 'images/wall/floor-2.png');
     }
 
-    drawRoomInitial() {
+    private drawRoomInitial() {
         this.walls = this.physics.add.staticGroup();
 
         var topStartPoint = 24;
@@ -231,4 +252,19 @@ export class GameScene extends Phaser.Scene {
 
 
     }
+
+    private updateTime(){
+        this.gameTime.update(this.gameOverEvent.getProgress());
+        this.remainingTimeText.setText(this.gameTime.getTime())
+        
+        let textColor = this.gameOverEvent.getProgress() < 0.5  
+            ? 'green' 
+            : this.gameOverEvent.getProgress() < 0.75 ? 'orange' : 'red';
+
+        this.remainingTimeText.setColor(textColor);
+    }
+
+    onGameOverEvent(): void {
+        this.scene.start('ScoreScene', { score: this.score });
+    }       
 };
