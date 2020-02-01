@@ -1,9 +1,15 @@
 import "phaser";
 import { Majster } from './majster';
+import { Dialog } from "./dialog";
+
+import { ItemType } from "./itemType.enum";
 
 export class GameScene extends Phaser.Scene {
     private majster: Majster;
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+
+    private dialog: Dialog;
+    private dialogText: Phaser.GameObjects.Text;
 
     constructor() {
         super({
@@ -12,7 +18,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     init(): void {
-        
     }
 
     preload(): void {
@@ -43,9 +48,25 @@ export class GameScene extends Phaser.Scene {
 
         this.majster = new Majster(this.physics.add.sprite(16,32,'majster'))
         this.majster.setPosition(160, 30);
+
+        this.dialog = new Dialog();
+        this.dialog.create(ItemType.Boot);
+
+        this.dialogText = this.add.text(50, 600, "", { font: '20px Consolas', fill: '#FFFFFF' });
+
+        this.loadDialog();
     }
 
     update(): void {
         this.majster.move(this.cursors);
+    }
+
+    private loadDialog() {
+        this.time.addEvent({delay: 50, callback: this.updateDialog, callbackScope: this, repeat: 20});
+    }
+
+    private updateDialog() {
+        this.dialog.nextLetter();
+        this.dialogText.setText(this.dialog.text);
     }
 };

@@ -25,7 +25,7 @@ export class WelcomeScene extends Phaser.Scene {
             { font: '24px Arial Bold', fill: '#FBFBAC' });
 
         this.input.on('pointerdown', function (/*pointer*/) {
-            this.scene.start("ItemListScene");
+            this.scene.start("GameScene");
         }, this);
     }
 };
