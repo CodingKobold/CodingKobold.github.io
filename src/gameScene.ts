@@ -107,6 +107,8 @@ export class GameScene extends Phaser.Scene {
 
         this.load.image('floor-1', 'images/wall/floor1.png');
         this.load.image('floor-2', 'images/wall/floor-2.png');
+        this.load.image('floor-3', 'images/wall/floor-3.png');
+        this.load.image('floor-4', 'images/wall/floor-4.png');
     }
 
     drawRoomInitial() {
@@ -118,9 +120,13 @@ export class GameScene extends Phaser.Scene {
         var rightStopPoint = 856; //16 * x +12
 
         //podłoga
-        for (var i = leftStartPoint+22; i<=rightStopPoint-10; i+=16){
-            this.add.image(i, topStartPoint+53, "floor-2");
+        for (var j = topStartPoint+53; j<= bottomStopPoint-10; j+=16){
+            for (var i = leftStartPoint+22; i<=rightStopPoint-10; i+=16){
+                var randNumber = Math.floor(Math.random() * 3) + 2;
+                this.add.image(i, j, "floor-"+randNumber);
+            }
         }
+
         
 
         //środkowy murek
@@ -193,7 +199,7 @@ export class GameScene extends Phaser.Scene {
         var doorAreaLenght = doorStartPointLeft + 128;
 
         //wejście-podłoga!!!
-        for (var j = 48 ;j<=96; j+=16){
+        for (var j = 42 ;j<=90; j+=16){
             for(var i = 16; i<=128; i+=16){
                 this.add.image(doorStartPointLeft+i, doorStartPointTop-j, "floor-1");
             }
