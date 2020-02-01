@@ -4,7 +4,7 @@ import { ItemType } from './ItemType.enum';
 export class Majster {
 	majster: Phaser.Physics.Arcade.Sprite;
 	repairedItem: RepairedItem = null;
-	equipment: ItemType[];
+	equipment: ItemType[] = [];
 	maxItemNumber: number;
 
 	static image: string = 'images/majster.png';

@@ -80,8 +80,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     takeTools() {
-      //  this.scene.start('ItemSelectionScene', {majster: this.majster});
-      
+        this.scene.run('ItemSelectionScene', {   majster: this.majster});
+        this.scene.switch('ItemSelectionScene');
     }
     
     update(): void {

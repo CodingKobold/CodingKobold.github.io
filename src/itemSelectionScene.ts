@@ -56,6 +56,11 @@ export class ItemSelectionScene extends Phaser.Scene {
 
     update() {
         this.updateSelection();
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.shift))
+        {
+            this.exit();
+        }
     }
 
     private updateSelection() {
@@ -70,6 +75,13 @@ export class ItemSelectionScene extends Phaser.Scene {
 
         this.wasDownDown = this.cursors.down.isDown;
         this.wasUpDown = this.cursors.up.isDown;
+    }
+
+    private exit(){
+        this.majster.equipment.push(ItemType.Kabel);
+        this.majster.equipment.push(ItemType.Obcegi);
+
+        this.scene.switch("GameScene");
     }
 
     private moveSelectionDown() {
