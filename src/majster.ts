@@ -10,31 +10,23 @@ export class Majster {
 	}
 
 	move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void {
-		// up
-		if (Phaser.Input.Keyboard.JustDown(cursor.up)) {
+		// y
+		if (cursor.up.isDown) {
 			this.majster.setVelocityY(-50);
-		} else if (Phaser.Input.Keyboard.JustUp(cursor.up)) {
-			this.majster.setVelocityY(0);
-		}
-
-		// down
-		if (Phaser.Input.Keyboard.JustDown(cursor.down)) {
+		} 
+		else if (cursor.down.isDown) {
 			this.majster.setVelocityY(50);
-		} else if (Phaser.Input.Keyboard.JustUp(cursor.down)) {
+		} 
+		else if (Phaser.Input.Keyboard.JustUp(cursor.up) || Phaser.Input.Keyboard.JustUp(cursor.down)) {
 			this.majster.setVelocityY(0);
 		}
 
-		// right
-		if (Phaser.Input.Keyboard.JustDown(cursor.right)) {
+		// x
+		if (cursor.right.isDown) {
 			this.majster.setVelocityX(50);
-		} else if (Phaser.Input.Keyboard.JustUp(cursor.right)) {
-			this.majster.setVelocityX(0);
-		}
-
-		// left
-		if (Phaser.Input.Keyboard.JustDown(cursor.left)) {
+		} else if (cursor.left.isDown) {
 			this.majster.setVelocityX(-50);
-		} else if (Phaser.Input.Keyboard.JustUp(cursor.left)) {
+		} else if (Phaser.Input.Keyboard.JustUp(cursor.right) || Phaser.Input.Keyboard.JustUp(cursor.left)) {
 			this.majster.setVelocityX(0);
 		}
     }
