@@ -26,8 +26,8 @@ export class ItemSelectionScene extends Phaser.Scene {
         this.selectableItems = Object.values(ItemType);
         
         this.baseStyle = {
-            font: '20px Arial Bold',
-            align: 'center',
+            font: '20px Consolas',
+            align: 'left',
             fill: '#FFFFFF'
         };
 
@@ -107,7 +107,7 @@ export class ItemSelectionScene extends Phaser.Scene {
 
     private printItemAndGetHandle(itemName: string, row: number, selected: boolean): Phaser.GameObjects.Text {
         let startX = 150;
-        let startY = 100;
+        let startY = 130;
         let stepY = 30;
         var y = startY + row * stepY;
         return this.add.text(startX, y, itemName, selected ? this.selectedStyle : this.baseStyle);
