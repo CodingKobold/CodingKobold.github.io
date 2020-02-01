@@ -10,19 +10,15 @@ export class WelcomeScene extends Phaser.Scene {
         });
     }
 
-    create(): void {
-        var titleText: string = "Nie ma problemu";
+    preload(): void {         
+        this.load.image('brigade-logo', 'images/brigade-logo.png');
+        this.load.image('nie-ma-problemu', 'images/nie-ma-problemu.png');
+    }
 
-        this.title = this.add.text(150, 200, titleText,
-            {
-                font: '128px Consolas',
-                fill: '#FBFBAC'
-            });
+    create(): void {    
 
-        var hintText: string = "Click to start";
-
-        this.hint = this.add.text(300, 350, hintText,
-            { font: '24px Consolas', fill: '#FBFBAC' });
+        this.add.image(675, 250, 'brigade-logo').setDisplaySize(900,400);
+        this.add.image(675, 575, 'nie-ma-problemu').setDisplaySize(1400,600);
 
         this.input.on('pointerdown', function (/*pointer*/) {
             this.scene.start("GameScene");
