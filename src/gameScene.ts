@@ -22,6 +22,7 @@ export class GameScene extends Phaser.Scene {
     private graphics: Phaser.GameObjects.Graphics;
     private walls: Phaser.Physics.Arcade.StaticGroup;
     private entrance: Phaser.Physics.Arcade.StaticGroup;
+    private workbench: Phaser.Physics.Arcade.StaticGroup;
 
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
@@ -59,6 +60,7 @@ export class GameScene extends Phaser.Scene {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
         this.drawRoomInitial();
+        this.prepareRoomItems();
         this.prepareInput();
         this.prepareMajster();
         this.preparePhysics();
@@ -78,6 +80,10 @@ export class GameScene extends Phaser.Scene {
                 this.currentGameWindow = GameWindowFocus.Majster;
                 console.log(this.majster.repairedItem);
             }
+        }
+
+        if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
+            this.checkClosestWorkbench();
         }
     }
 
@@ -128,6 +134,7 @@ export class GameScene extends Phaser.Scene {
 
     preparePhysics(): void {
         this.physics.add.collider(this.majster.majster, this.walls);
+        this.physics.add.collider(this.majster.majster, this.workbench);
         this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
     }
 
@@ -154,6 +161,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('floor-2', 'images/wall/floor-2.png');
         this.load.image('floor-3', 'images/wall/floor-3.png');
         this.load.image('floor-4', 'images/wall/floor-4.png');
+
+        this.load.image('workbench', 'images/furniture/workbench.png');
     }
 
     private drawRoomInitial() {
@@ -277,6 +286,17 @@ export class GameScene extends Phaser.Scene {
         this.walls.create(doorAreaLenght+5, doorStartPointTop-88, "wall-right-small").setAngle(180);
     }
 
+    private prepareRoomItems() {
+        this.workbench = this.physics.add.staticGroup();
+        let workbenchStartPointLeft = 300;
+        let workbenchStartPointTop = 200;
+
+        for (var i = workbenchStartPointLeft; i <= 300 + 16 * 5; i += 16){
+            this.workbench.create(i, workbenchStartPointTop, "workbench");
+            this.workbench.create(i, workbenchStartPointTop + 16, "workbench");
+        }
+    }
+
     private updateTime(){
         this.gameTime.update(this.gameOverEvent.getProgress());
         this.remainingTimeText.setText(this.gameTime.getTime())
@@ -335,5 +355,19 @@ export class GameScene extends Phaser.Scene {
     private updateResponse(): void {
         this.responseDialog.nextLetter();
         this.majsterDialogText.setText(this.responseDialog.text);
+    }
+
+    private checkClosestWorkbench(): void {
+        if (this.majster.repairedItem === null) {
+            return;
+        }
+
+        let closestWorkbench = this.physics.closest(this.majster.majster, this.workbench.getChildren()) as Phaser.Physics.Arcade.Sprite;
+        let workbenchDistance = Phaser.Math.Distance.Between(this.majster.majster.x, this.majster.majster.y, closestWorkbench.x, closestWorkbench.y);            
+        
+        if (workbenchDistance < 40.0){
+            let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
+            this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+        }
     }
 };

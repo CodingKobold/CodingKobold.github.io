@@ -1,12 +1,12 @@
 export enum ItemType {
-    ZardzewialaSrubka = "Zardzewiala Śrubka",
-    Srubokret = "Śrubokret",
-    Nit = "nit",
-    Mlotek = "mlotek",
-    Obcegi = "obcegi",
-    Kabel = "kabel",
-    Smar = "smar",
-    Miara = "miara",
-    Neonowka = "neonowka",
-    Kombinerki = "kombinerki"
+    ZardzewialaSrubka = "ZARDZEWIAŁA ŚRUBKA",
+    Srubokret = "ŚRUBOKRĘT",
+    Nit = "NIT",
+    Mlotek = "MŁOTEK",
+    Obcegi = "OBCĘGI",
+    Kabel = "KABEL",
+    Smar = "SMAR",
+    Miara = "MIARA",
+    Neonowka = "NEONÓWKA",
+    Kombinerki = "KOMBINERKI"
 }
