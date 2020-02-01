@@ -67,6 +67,15 @@ export class GameScene extends Phaser.Scene {
         this.actionKey = this.cursors.space;
 
         this.physics.add.collider(this.majster.majster, this.walls);
+        this.physics.add.sprite(16,48, 'majster');
+
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('majster', { start: 0, end: 2 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        
         new RepairedItem();
     }
     

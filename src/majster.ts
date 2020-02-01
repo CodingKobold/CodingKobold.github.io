@@ -7,7 +7,6 @@ export class Majster {
 
 	constructor(sprite: Phaser.Physics.Arcade.Sprite) {
 		this.majster = sprite;
-
 		this.majster.setCollideWorldBounds(true);
 	}
 
@@ -15,6 +14,7 @@ export class Majster {
 		// y
 		if (cursor.up.isDown) {
 			this.majster.setVelocityY(-this.velocity);
+			this.majster.anims.play('left', true);
 		} 
 		else if (cursor.down.isDown) {
 			this.majster.setVelocityY(this.velocity);
