@@ -1,20 +1,26 @@
 import { Majster } from './majster';
 import { ItemType } from './ItemType.enum';
+import { GameWindowFocus } from './gameWindowFocus.enum';
 
 export class ItemSelectionScene extends Phaser.Scene {
-    title: Phaser.GameObjects.Text;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
-    index: number = 0;
-    selectableItems: ItemType[]=[];
-    private equipmentText: {[key:number]:  Phaser.GameObjects.Text};
+    private index: number = 0;
+    private wordrobeToolActive: boolean;
+    private wordrobeTools: ItemType[];
+    private wordrobeTexts: Phaser.GameObjects.Text[];
+    private majsterToolsTexts: Phaser.GameObjects.Text[];
 
+    baseStyle: any = {
+        font: '20px Consolas',
+        fill: '#FFFFFF'
+    };
 
-    wasDownDown: boolean = false;
-    wasUpDown: boolean = false;
-
-    baseStyle: any;
-    selectedStyle: any;
+    selectedStyle: any = {
+        font: this.baseStyle.font,
+        align: this.baseStyle.align,
+        fill: '#FBFBAC'
+    };
 
     private majster: Majster;
 
@@ -22,20 +28,6 @@ export class ItemSelectionScene extends Phaser.Scene {
         super({
             key: "ItemSelectionScene"
         });
-        
-        this.selectableItems = Object.values(ItemType);
-        
-        this.baseStyle = {
-            font: '20px Arial Bold',
-            align: 'center',
-            fill: '#FFFFFF'
-        };
-
-        this.selectedStyle = {
-            font: this.baseStyle.font,
-            align: this.baseStyle.align,
-            fill: '#FBFBAC'
-        }
     }
 
     init(params: any): void {
@@ -45,79 +37,153 @@ export class ItemSelectionScene extends Phaser.Scene {
     create(): void {
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.title = this.add.text(150, 50, "Co wybierasz?",
+        this.add.text(150, 50, "Co wybierasz?",
         {
-            font: '32px Consolas Bold',
+            font: '32px Consolas',
             fill: '#FBFBAC'
         });
 
-        this.printItemsAndGetHandles();
+        this.wordrobeToolActive=true;
+        this.wordrobeTools = Object.values(ItemType).filter(x => !this.majster.equipment.includes(x));
+        this.wordrobeTexts = [];
+        this.majsterToolsTexts = [];
+
+        this.prepareWordrobeItems();
+        this.prepareMajsterItems();
     }
 
     update() {
-        this.updateSelection();
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.left) && this.wordrobeTools.length!==0)
+        {
+           this.wordrobeToolActive=true;
+           this.index = 0;
+           
+            this.updateWordrobeItems();
+            this.updateMajsterItems();
+        }
+        else if (Phaser.Input.Keyboard.JustDown(this.cursors.right) && this.majster.equipment.length!==0)
+        {
+            this.wordrobeToolActive=false;
+            this.index = 0;
+
+            this.updateWordrobeItems();
+            this.updateMajsterItems();
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
+            this.moveSelectionUp();
+            
+            this.updateWordrobeItems();
+            this.updateMajsterItems();
+        }
+        else if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
+            this.moveSelectionDown();
+
+            this.updateWordrobeItems();
+            this.updateMajsterItems();
+        }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursors.shift))
         {
             this.exit();
         }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.space))
+        {
+            if (this.wordrobeToolActive){
+                this.ChooseTool();
+            }
+            else {
+                this.removeTool();
+            }
+            
+            this.updateWordrobeItems();
+            this.updateMajsterItems();
+        }
     }
 
-    private updateSelection() {
-        if (this.cursors.up.isDown && !this.wasUpDown) {
-            this.moveSelectionUp();
-            this.updatePrintedItems();
-        }
-        if (this.cursors.down.isDown && !this.wasDownDown) {
-            this.moveSelectionDown();
-            this.updatePrintedItems();
-        }
+    removeTool() {
+        var item = this.majster.equipment[this.index];
 
-        this.wasDownDown = this.cursors.down.isDown;
-        this.wasUpDown = this.cursors.up.isDown;
+        this.wordrobeTools.push(item);
+        this.majster.equipment = this.majster.equipment.filter(x => x != item);
+            
+        this.index = this.index >= this.majster.equipment.length ? this.wordrobeTools.length-1 : 0;
+
+    }
+
+    private ChooseTool() {
+        var item = this.wordrobeTools[this.index];
+
+        this.majster.equipment.push(item);
+        this.wordrobeTools = this.wordrobeTools.filter(x => x != item);
+            
+        this.index = this.index >= this.wordrobeTools.length ? this.wordrobeTools.length-1 : 0;
     }
 
     private exit(){
-        this.majster.equipment.push(ItemType.Kabel);
-        this.majster.equipment.push(ItemType.Obcegi);
+        let gameScene:any = this.scene.get('GameScene');
 
-        this.scene.switch("GameScene");
+        gameScene.currentGameWindow = GameWindowFocus.Majster;
+        this.scene.stop();
     }
 
     private moveSelectionDown() {
-        if (this.index < this.selectableItems.length - 1) {
+        if (this.index < this.wordrobeTools.length - 1) {
             this.index += 1;
-            console.log(`Selection moved down, current index: ${this.index}`);
         }
     }
 
     private moveSelectionUp() {
         if (this.index > 0) {
             this.index -= 1;
-            console.log(`Selection moved up, current index: ${this.index}`);
         }
     }
 
-    private printItemsAndGetHandles() {
-        var i = 0;
-        this.selectableItems.forEach((itemNameHandle, i, _) => {
-           this.printItemAndGetHandle(itemNameHandle, i, this.index == i);
+    private updateWordrobeItems() {
+        this.wordrobeTexts.forEach(x => x.setText(""));
+
+        this.wordrobeTools.forEach((item, i) => {
+            let isSelected = (i == this.index && this.wordrobeToolActive);
+            
+            this.wordrobeTexts[i].setText(item)
+            this.wordrobeTexts[i].setStyle( isSelected ? this.selectedStyle : this.baseStyle);
         });
     }
 
-    private printItemAndGetHandle(itemName: string, row: number, selected: boolean): Phaser.GameObjects.Text {
-        let startX = 150;
-        let startY = 100;
-        let stepY = 30;
-        var y = startY + row * stepY;
-        return this.add.text(startX, y, itemName, selected ? this.selectedStyle : this.baseStyle);
+    private updateMajsterItems() {
+        this.majsterToolsTexts.forEach(x => x.setText(""));
+
+        this.majster.equipment.forEach((item, i) => {
+            let isSelected = (i == this.index && !this.wordrobeToolActive);
+            this.majsterToolsTexts[i].setText(item)
+            this.majsterToolsTexts[i].setStyle( isSelected ? this.selectedStyle : this.baseStyle);
+        });
     }
 
+    private prepareWordrobeItems() {
+        const startX = 150;
+        const startY = 100;
+        let stepY = 30;
 
+        Object.keys(ItemType).forEach((item, i) => {
+            let isSelected = (i == this.index && this.wordrobeToolActive);
+            this.wordrobeTexts.push(this.add.text(startX, startY + i*stepY, "", isSelected ? this.selectedStyle : this.baseStyle));
+        });
 
-    private updatePrintedItems() {
-        this.selectableItems.forEach((itemNameHandle, i, _) => {
-            //itemNameHandle[1].setStyle(this.index == i ? this.selectedStyle : this.baseStyle);
-        })
+        this.updateWordrobeItems();
+    }
+
+    private prepareMajsterItems() {
+        const startX = 500;
+        const startY = 100;
+        let stepY = 30;
+
+        Object.keys(ItemType).forEach((item, i) => {
+            let isSelected = (i == this.index && !this.wordrobeToolActive);
+            this.majsterToolsTexts.push(this.add.text(startX, startY + i*stepY, "", isSelected  ? this.selectedStyle : this.baseStyle));
+        });
+
+        this.updateMajsterItems();
     }
 };
