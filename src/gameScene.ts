@@ -48,7 +48,10 @@ export class GameScene extends Phaser.Scene {
 
     preload(): void {         
         this.loadRoomAssets();
-        this.load.image('majster', Majster.image);
+        this.load.spritesheet('majster', 
+            Majster.image,
+            { frameWidth: 16, frameHeight: 16 }
+        );
     }
 
     create(): void {
