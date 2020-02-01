@@ -142,7 +142,7 @@ export class GameScene extends Phaser.Scene {
 
         //prawa ściana
         for (var i=topStartPoint+16; i<=bottomStopPoint-32; i+=16){
-            this.add.image(rightStopPoint, i, "wall-brick-right-center");
+            this.walls.create(rightStopPoint, i, "wall-brick-right-center");
         }
 
         for (var i=topStartPoint+16; i<=bottomStopPoint-40; i+=16){
@@ -151,8 +151,10 @@ export class GameScene extends Phaser.Scene {
 
         //dolna ściana
         for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
-            this.add.image(i, bottomStopPoint-24, "wall-top").setAngle(180);
-            this.add.image(i, bottomStopPoint-36, "wall-bottom-small").setAngle(180);
+            if (i <= leftStartPoint+144 || i >= leftStartPoint + 272){
+                this.walls.create(i, bottomStopPoint-24, "wall-top").setAngle(180);
+                this.walls.create(i, bottomStopPoint-36, "wall-bottom-small").setAngle(180);
+            }       
         }
 
         // //narożniki zewnętrzne i wewnętrzne
@@ -170,8 +172,10 @@ export class GameScene extends Phaser.Scene {
         this.walls.create(leftStartPoint, bottomStopPoint, "wall-brick-left");
         this.walls.create(rightStopPoint, bottomStopPoint, "wall-brick-right");
 
-        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
-            this.walls.create(i, bottomStopPoint, "wall-brick-center");
+        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){      
+            if (i <= leftStartPoint+128 || i >= leftStartPoint + 272){
+                this.walls.create(i, bottomStopPoint, "wall-brick-center");
+            } 
         }
 
         //okna
@@ -182,38 +186,39 @@ export class GameScene extends Phaser.Scene {
         var doorStartPointLeft = 300; 
         var doorAreaLenght = doorStartPointLeft + 128;
 
+        //wejście-podłoga!!!
         for (var j = 48 ;j<=96; j+=16){
             for(var i = 16; i<=128; i+=16){
                 this.add.image(doorStartPointLeft+i, doorStartPointTop-j, "floor-1");
             }
         }
 
-        this.add.image(doorStartPointLeft, doorStartPointTop, "wall-brick-left");
-        this.add.image(doorAreaLenght + 16, doorStartPointTop, "wall-brick-right");
+        this.walls.create(doorStartPointLeft, doorStartPointTop, "wall-brick-left");
+        this.walls.create(doorAreaLenght + 16, doorStartPointTop, "wall-brick-right");
         for (var i=doorStartPointLeft+16; i<=doorAreaLenght; i+=16 ){
-            this.add.image(i, doorStartPointTop, "wall-brick-center");
+            this.walls.create(i, doorStartPointTop, "wall-brick-center");
         }
 
-        this.add.image(doorStartPointLeft, doorStartPointTop-24, "wall-right-top-corner").setAngle(180);
-        this.add.image(doorAreaLenght+16, doorStartPointTop-24, "wall-left-top-corner").setAngle(180);
+        this.walls.create(doorStartPointLeft, doorStartPointTop-24, "wall-right-top-corner").setAngle(180);
+        this.walls.create(doorAreaLenght+16, doorStartPointTop-24, "wall-left-top-corner").setAngle(180);
 
         for (var i=doorStartPointLeft+16; i<=doorAreaLenght; i+=16){
-            this.add.image(i, doorStartPointTop-24, "wall-top").setAngle(180);
-            this.add.image(i, doorStartPointTop-36, "wall-bottom-small").setAngle(180);
+            this.walls.create(i, doorStartPointTop-24, "wall-top").setAngle(180);
+            this.walls.create(i, doorStartPointTop-36, "wall-bottom-small").setAngle(180);
         }
 
         this.add.image(doorStartPointLeft + doorAreaLenght/6, doorStartPointTop-2, "wall-door");
 
         for (var i=40; i<=72; i+=16){
-            this.add.image(doorStartPointLeft, doorStartPointTop-i, "wall-brick-right-center").setAngle(180);
-            this.add.image(doorStartPointLeft+11, doorStartPointTop-i, "wall-right-small");
+            this.walls.create(doorStartPointLeft, doorStartPointTop-i, "wall-brick-right-center").setAngle(180);
+            this.walls.create(doorStartPointLeft+11, doorStartPointTop-i, "wall-right-small");
 
-            this.add.image(doorAreaLenght+16, doorStartPointTop-i, "wall-brick-right-center");
-            this.add.image(doorAreaLenght+5, doorStartPointTop-i, "wall-right-small").setAngle(180);
+            this.walls.create(doorAreaLenght+16, doorStartPointTop-i, "wall-brick-right-center");
+            this.walls.create(doorAreaLenght+5, doorStartPointTop-i, "wall-right-small").setAngle(180);
         }
 
-        this.add.image(doorStartPointLeft+11, doorStartPointTop-88, "wall-right-small");
-        this.add.image(doorAreaLenght+5, doorStartPointTop-88, "wall-right-small").setAngle(180);
+        this.walls.create(doorStartPointLeft+11, doorStartPointTop-88, "wall-right-small");
+        this.walls.create(doorAreaLenght+5, doorStartPointTop-88, "wall-right-small").setAngle(180);
         
 
 
