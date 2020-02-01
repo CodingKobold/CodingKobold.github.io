@@ -141,9 +141,9 @@ export class GameScene extends Phaser.Scene {
         }  
 
         //prawa ściana
-        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
-            this.walls.create(i, bottomStopPoint-24, "wall-top").setAngle(180);
-        } 
+        for (var i=topStartPoint+16; i<=bottomStopPoint-32; i+=16){
+            this.add.image(rightStopPoint, i, "wall-brick-right-center");
+        }
 
         for (var i=topStartPoint+16; i<=bottomStopPoint-40; i+=16){
             this.walls.create(rightStopPoint-11, i, "wall-right-small").setAngle(180);
@@ -153,7 +153,6 @@ export class GameScene extends Phaser.Scene {
         for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
             this.add.image(i, bottomStopPoint-24, "wall-top").setAngle(180);
             this.add.image(i, bottomStopPoint-36, "wall-bottom-small").setAngle(180);
-
         }
 
         // //narożniki zewnętrzne i wewnętrzne
