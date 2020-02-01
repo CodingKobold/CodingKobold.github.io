@@ -57,13 +57,19 @@ export class GameScene extends Phaser.Scene {
 
     preload(): void {         
         this.loadRoomAssets();
+        this.loadGrassAssets();
         this.load.spritesheet('majster', Majster.image, { frameWidth: 32, frameHeight: 32 });
         this.load.image('dialog-box', 'images/dialog-box.png');
+        this.load.image('client1', 'images/clients/client1.png');
+        this.load.image('client2', 'images/clients/client2.png');
+        this.load.image('client3', 'images/clients/client3.png');
+        this.load.image('client4', 'images/clients/client4.png');
     }
 
     create(): void {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
+        this.drawGrassInitial();
         this.drawRoomInitial();
         this.prepareInput();
         this.prepareMajster();
@@ -99,22 +105,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareGameShapes() {
-        let outerArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 0, 144, 576);
-        let workshopArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(144, 0, 736, 576);
         let itemsArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(880, 0, 464, 720);
-        let dialogArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 576, 880, 144);
-        
-        this.graphics.fillStyle(0x00ff00);
-        this.graphics.fillRectShape(outerArea);
-
-        this.graphics.fillStyle(0xffff00);
-        this.graphics.fillRectShape(workshopArea);
-
-        this.graphics.fillStyle(0x0000ff);
-        this.graphics.fillRectShape(itemsArea);
 
         this.graphics.fillStyle(0x000000);
-        this.graphics.fillRectShape(dialogArea);
+        this.graphics.fillRectShape(itemsArea);
     }
 
     private prepareTime() {
@@ -126,12 +120,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareDialogs() {
-        this.add.image(440, 648, 'dialog-box').setDisplaySize(880,144);
+        this.add.image(443, 648, 'dialog-box').setDisplaySize(890,144);
 
         this.requestDialog = new Dialog();
         this.responseDialog = new Dialog();
-        this.clientDialogText = this.add.text(50, 606, "", { font: '24px Consolas', fill: '#050505' });
-        this.majsterDialogText = this.add.text(50, 646, "", { font: '24px Consolas', fill: '#ff0000' });
+        this.clientDialogText = this.add.text(130, 606, "", { font: '24px Consolas', fill: '#050505' });
+        this.majsterDialogText = this.add.text(130, 646, "", { font: '24px Consolas', fill: '#ff0000' });
     }
 
     prepareMajster() {
@@ -149,6 +143,42 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.majster.majster, this.walls);
         this.physics.add.collider(this.majster.majster, this.workbench);
         this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
+    }
+
+    private loadGrassAssets(){
+        this.load.image('grass1', 'images/grass/grass1.png');
+        this.load.image('grass2', 'images/grass/grass2.png');
+        this.load.image('grass3', 'images/grass/grass3.png');
+        this.load.image('grass4', 'images/grass/grass4.png');
+        this.load.image('grass5', 'images/grass/grass5.png');
+        this.load.image('tree1', 'images/grass/tree1.png');
+        this.load.image('tree2', 'images/grass/tree2.png');
+        this.load.image('water1', 'images/grass/water1.png');
+        this.load.image('water2', 'images/grass/water2.png');
+        this.load.image('walk1', 'images/grass/walk1.png');
+        this.load.image('walk2', 'images/grass/walk2.png');
+        this.load.image('walk3', 'images/grass/walk3.png');
+    }
+
+    private drawGrassInitial(){
+        for (var j = 0; j<=880; j+=16){
+            for (var i = 0; i<=880; i+=16){
+                var randNumber = Math.floor(Math.random() * 5) + 1;
+                this.add.image(i, j, "grass"+ randNumber);
+            }
+        }
+        this.add.image(75, 22, "tree1");
+        this.add.image(15, 150, "tree2");
+        this.add.image(92, 350, "tree2");
+        this.add.image(750, 535, "tree2").setDisplaySize(55,55);
+        this.add.image(40, 430, "water1");
+        this.add.image(23, 255, "water2");
+        this.add.image(376, 565, "walk1");
+        for (var i=392; i<=648; i+=16){
+            this.add.image(i, 569, "walk2");
+        }
+        this.add.image(648, 569, "walk3");
+        
     }
 
     private loadRoomAssets() {
@@ -352,6 +382,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     private loadRequest(item: RepairedItemType): void {
+        var randNumber = Math.floor(Math.random() * 3) + 1;
+        this.add.image(66, 646, "client"+randNumber).setDisplaySize(90,90);
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.requestDialog.createRequest(item);
         this.time.addEvent({delay: 50, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
