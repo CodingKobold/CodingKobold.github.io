@@ -1,5 +1,5 @@
 export class Majster {
-	private majster: Phaser.Physics.Arcade.Sprite;
+	majster: Phaser.Physics.Arcade.Sprite;
 
 	static image: string = 'images/majster.png';
 
