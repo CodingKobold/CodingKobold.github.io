@@ -61,13 +61,13 @@ export class Majster {
 
 		manager.create({
 			key: 'right',
-			frames: manager.generateFrameNumbers('majster', { start: 0, end: 2 }),
+			frames: manager.generateFrameNumbers('majster', { start: 6, end: 8 }),
 			frameRate: 10,
 			repeat: -1});
 		
 		manager.create({
 			key: 'left',
-			frames: manager.generateFrameNumbers('majster', { start: 3, end: 5 }),
+			frames: manager.generateFrameNumbers('majster', { start: 9, end: 11 }),
 			frameRate: 10,
 			repeat: -1});
 	}
