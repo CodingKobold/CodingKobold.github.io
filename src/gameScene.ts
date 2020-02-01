@@ -128,48 +128,48 @@ export class GameScene extends Phaser.Scene {
  
         //lewa ściana
         for (var i=topStartPoint+8; i<=bottomStopPoint-16; i+=16){
-            this.add.image(leftStartPoint, i, "wall-left");
+            this.walls.create(leftStartPoint, i, "wall-left");
         }
 
         for (var i=topStartPoint+22; i<=bottomStopPoint-16; i+=16){
-            this.add.image(leftStartPoint+11, i, "wall-right-small");
+            this.walls.create(leftStartPoint+11, i, "wall-right-small");
         }  
 
         //prawa ściana
         for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
-            this.add.image(i, bottomStopPoint-24, "wall-top").setAngle(180);
+            this.walls.create(i, bottomStopPoint-24, "wall-top").setAngle(180);
         } 
 
         for (var i=topStartPoint+16; i<=bottomStopPoint-40; i+=16){
-            this.add.image(rightStopPoint-11, i, "wall-right-small").setAngle(180);
+            this.walls.create(rightStopPoint-11, i, "wall-right-small").setAngle(180);
         }
 
         //dolna ściana
         for (var i=topStartPoint+16; i<=bottomStopPoint-32; i+=16){
-            this.add.image(rightStopPoint, i, "wall-brick-right-center");
+            this.walls.create(rightStopPoint, i, "wall-brick-right-center");
         }
         
         for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
-            this.add.image(i, bottomStopPoint-36, "wall-bottom-small").setAngle(180);
+            this.walls.create(i, bottomStopPoint-36, "wall-bottom-small").setAngle(180);
         }
 
         // //narożniki zewnętrzne i wewnętrzne
-        this.add.image(leftStartPoint+11, topStartPoint+12, "wall-middle-right-corner");
-        this.add.image(rightStopPoint-11, topStartPoint+12, "wall-middle-left-corner");
-        this.add.image(leftStartPoint+11, bottomStopPoint-36, "wall-middle-left-corner").setAngle(180);
-        this.add.image(rightStopPoint-11, bottomStopPoint-36, "wall-middle-right-corner").setAngle(180);
+        this.walls.create(leftStartPoint+11, topStartPoint+12, "wall-middle-right-corner");
+        this.walls.create(rightStopPoint-11, topStartPoint+12, "wall-middle-left-corner");
+        this.walls.create(leftStartPoint+11, bottomStopPoint-36, "wall-middle-left-corner").setAngle(180);
+        this.walls.create(rightStopPoint-11, bottomStopPoint-36, "wall-middle-right-corner").setAngle(180);
 
-        this.add.image(leftStartPoint, topStartPoint, "wall-left-top-corner");
-        this.add.image(rightStopPoint, topStartPoint, "wall-right-top-corner");
-        this.add.image(rightStopPoint, bottomStopPoint-24, "wall-left-top-corner").setAngle(180);
-        this.add.image(leftStartPoint, bottomStopPoint-24, "wall-right-top-corner").setAngle(180);
+        this.walls.create(leftStartPoint, topStartPoint, "wall-left-top-corner");
+        this.walls.create(rightStopPoint, topStartPoint, "wall-right-top-corner");
+        this.walls.create(rightStopPoint, bottomStopPoint-24, "wall-left-top-corner").setAngle(180);
+        this.walls.create(leftStartPoint, bottomStopPoint-24, "wall-right-top-corner").setAngle(180);
 
         //dolny murek
-        this.add.image(leftStartPoint, bottomStopPoint, "wall-brick-left");
-        this.add.image(rightStopPoint, bottomStopPoint, "wall-brick-right");
+        this.walls.create(leftStartPoint, bottomStopPoint, "wall-brick-left");
+        this.walls.create(rightStopPoint, bottomStopPoint, "wall-brick-right");
 
         for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
-            this.add.image(i, bottomStopPoint, "wall-brick-center");
+            this.walls.create(i, bottomStopPoint, "wall-brick-center");
         }
     }
 };
