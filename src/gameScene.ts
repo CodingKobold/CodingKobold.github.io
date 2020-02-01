@@ -60,13 +60,13 @@ export class GameScene extends Phaser.Scene {
     create(): void {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
-
+        this.drawRoomInitial();
         this.prepareInput();
         this.prepareMajster();
         this.preparePhysics();
-        this.drawRoomInitial();
         this.prepareDialogs();
         this.prepareTime();
+
     }
     
     update(): void {
@@ -129,8 +129,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     preparePhysics(): void {
-        this.walls = this.physics.add.staticGroup();
-        this.entrance = this.physics.add.staticGroup();
 
         this.physics.add.collider(this.majster.majster, this.walls);
         this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
@@ -162,6 +160,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     private drawRoomInitial() {
+        this.walls = this.physics.add.staticGroup();
+        this.entrance = this.physics.add.staticGroup();
+
         var topStartPoint = 24;
         var bottomStopPoint = 480;
         var leftStartPoint = 168;
