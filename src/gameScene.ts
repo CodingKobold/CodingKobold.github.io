@@ -162,6 +162,9 @@ export class GameScene extends Phaser.Scene {
         this.load.image('tree2', 'images/grass/tree2.png');
         this.load.image('water1', 'images/grass/water1.png');
         this.load.image('water2', 'images/grass/water2.png');
+        this.load.image('walk1', 'images/grass/walk1.png');
+        this.load.image('walk2', 'images/grass/walk2.png');
+        this.load.image('walk3', 'images/grass/walk3.png');
     }
 
     private drawGrassInitial(){
@@ -172,11 +175,17 @@ export class GameScene extends Phaser.Scene {
             }
         }
         this.add.image(75, 22, "tree1");
-        this.add.image(821, 540, "tree2").setDisplaySize(55,55);
-        this.add.image(665, 527, "tree2").setDisplaySize(55,55);
-        this.add.image(532, 535, "tree2").setDisplaySize(55,55);
+        this.add.image(15, 150, "tree2");
+        this.add.image(92, 350, "tree2");
+        this.add.image(750, 535, "tree2").setDisplaySize(55,55);
         this.add.image(40, 430, "water1");
         this.add.image(23, 255, "water2");
+        this.add.image(376, 565, "walk1");
+        for (var i=392; i<=648; i+=16){
+            this.add.image(i, 569, "walk2");
+        }
+        this.add.image(648, 569, "walk3");
+        
     }
 
     private loadRoomAssets() {
