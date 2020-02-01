@@ -25,21 +25,20 @@ export class GameScene extends Phaser.Scene {
         this.graphics = this.add.graphics();
     }
 
-    preload(): void {
+    preload(): void {         
         this.loadRoomAssets();
-        this.load.image('majster', Majster.image)
+        this.load.image('majster', Majster.image);
     }
 
     create(): void {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
+        this.drawRoomInitial();
         this.prepareMajster();
         this.prepareDialog();
 
         this.cursors = this.input.keyboard.createCursorKeys();
-
         this.loadDialog();
-        this.drawRoomInitial();
 
         this.physics.add.collider(this.majster.majster, this.walls);
     }
@@ -107,6 +106,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('wall-door', 'images/wall/door.png');
 
         this.load.image('floor-1', 'images/wall/floor1.png');
+        this.load.image('floor-2', 'images/wall/floor-2.png');
     }
 
     drawRoomInitial() {
@@ -116,6 +116,12 @@ export class GameScene extends Phaser.Scene {
         var bottomStopPoint = 480;
         var leftStartPoint = 168;
         var rightStopPoint = 856; //16 * x +12
+
+        //podłoga
+        for (var i = leftStartPoint+22; i<=rightStopPoint-10; i+=16){
+            this.add.image(i, topStartPoint+53, "floor-2");
+        }
+        
 
         //środkowy murek
         for (var i=leftStartPoint + 27; i<=rightStopPoint - 16; i += 16) {
