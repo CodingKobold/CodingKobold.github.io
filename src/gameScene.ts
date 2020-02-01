@@ -11,6 +11,8 @@ export class GameScene extends Phaser.Scene {
     private dialog: Dialog;
     private dialogText: Phaser.GameObjects.Text;
 
+    private graphics: Phaser.GameObjects.Graphics;
+
     constructor() {
         super({
             key: "GameScene"
@@ -18,6 +20,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     init(): void {
+        this.graphics = this.add.graphics();
     }
 
     preload(): void {
@@ -26,45 +29,53 @@ export class GameScene extends Phaser.Scene {
     }
 
     create(): void {
+        // TODO: Remove when not needed anymore
+        this.prepareGameShapes();
+        this.prepareMajster();
+        this.prepareDialog();
+
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        let graphics = this.add.graphics();
+        this.loadDialog();
+        this.drawRoomInitial();
+    }
+    
+    update(): void {
+        this.majster.move(this.cursors);
+    }
 
+    private prepareGameShapes() {
         let outerArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 0, 144, 576);
         let workshopArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(144, 0, 736, 576);
         let itemsArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(880, 0, 464, 720);
         let dialogArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(0, 576, 880, 144);
         
-        graphics.fillStyle(0x00ff00);
-        graphics.fillRectShape(outerArea);
+        this.graphics.fillStyle(0x00ff00);
+        this.graphics.fillRectShape(outerArea);
 
-        graphics.fillStyle(0xffff00);
-        graphics.fillRectShape(workshopArea);
+        this.graphics.fillStyle(0xffff00);
+        this.graphics.fillRectShape(workshopArea);
 
-        graphics.fillStyle(0x0000ff);
-        graphics.fillRectShape(itemsArea);
+        this.graphics.fillStyle(0x0000ff);
+        this.graphics.fillRectShape(itemsArea);
 
-        graphics.fillStyle(0x000000);
-        graphics.fillRectShape(dialogArea);
-
-        this.majster = new Majster(this.physics.add.sprite(16,32,'majster'))
-        this.majster.setPosition(160, 30);
-
-        this.dialog = new Dialog();
-        this.dialog.create(ItemType.Boot);
-
-        this.dialogText = this.add.text(50, 600, "", { font: '20px Consolas', fill: '#FFFFFF' });
-
-        this.loadDialog();
-        this.drawRoomInitial();
+        this.graphics.fillStyle(0x000000);
+        this.graphics.fillRectShape(dialogArea);
     }
 
-    update(): void {
-        this.majster.move(this.cursors);
+    private prepareDialog() {
+        this.dialog = new Dialog();
+        this.dialog.create(ItemType.Boot);
+        this.dialogText = this.add.text(50, 600, "", { font: '20px Consolas', fill: '#FFFFFF' });
+    }
+
+    prepareMajster() {
+        this.majster = new Majster(this.physics.add.sprite(16,32,'majster'))
+        this.majster.setPosition(160, 30);
     }
 
     private loadDialog() {
-        this.time.addEvent({delay: 50, callback: this.updateDialog, callbackScope: this, repeat: 20});
+        this.time.addEvent({delay: 50, callback: this.updateDialog, callbackScope: this, repeat: 50});
     }
 
     private updateDialog() {
