@@ -6,6 +6,7 @@ import { GameTime } from './gameTime';
 import { GameWindowFocus } from "./gameWindowFocus.enum";
 import { RepairedItem } from './repairedItem';
 import { RepairedItemType } from './repairedItemType.enum';
+import { ItemType } from './ItemType.enum';
 
 export class GameScene extends Phaser.Scene {
     // scene related
@@ -17,12 +18,15 @@ export class GameScene extends Phaser.Scene {
     
     // majster related
     private majster: Majster;
+    // equipment related
+    private equipmentText: {[key:number]:  Phaser.GameObjects.Text};
 
     // objects related
     private graphics: Phaser.GameObjects.Graphics;
     private walls: Phaser.Physics.Arcade.StaticGroup;
     private entrance: Phaser.Physics.Arcade.StaticGroup;
     private workbench: Phaser.Physics.Arcade.StaticGroup;
+    private wordrobe: Phaser.Physics.Arcade.Sprite;
 
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
@@ -66,6 +70,18 @@ export class GameScene extends Phaser.Scene {
         this.preparePhysics();
         this.prepareDialogs();
         this.prepareTime();
+        this.prepareEquipment();
+        this.prepareWordrobe();
+    }
+
+    private prepareWordrobe(){
+        this.wordrobe = this.physics.add.sprite(700, 200, 'wordrobe');
+        this.physics.add.collider(this.majster.majster, this.wordrobe, this.takeTools, null, this);
+    }
+
+    takeTools() {
+      //  this.scene.start('ItemSelectionScene', {majster: this.majster});
+      
     }
     
     update(): void {
@@ -78,13 +94,24 @@ export class GameScene extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
                 this.loadResponse();
                 this.currentGameWindow = GameWindowFocus.Majster;
-                console.log(this.majster.repairedItem);
             }
         }
 
         if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
             this.checkClosestWorkbench();
         }
+    }
+
+    prepareEquipment() {
+        this.add.text(900, 50,  "Ekwipunek Majstra:", { font: '18px Consolas' });
+        let y=80;
+        let ySpacing = 30;
+        this.equipmentText = {};
+        
+        Array.from(Array(Object.keys(ItemType).length/2).keys()).forEach(x => {
+            this.equipmentText[x] = this.add.text(900, y, x+1+ ". ....................") , { font: '18px Consolas' }
+            y += ySpacing;
+        })
     }
 
     private prepareGameShapes() {
@@ -163,6 +190,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('floor-4', 'images/wall/floor-4.png');
 
         this.load.image('workbench', 'images/furniture/workbench.png');
+        this.load.image('wordrobe', 'images/szafa.png');
     }
 
     private drawRoomInitial() {

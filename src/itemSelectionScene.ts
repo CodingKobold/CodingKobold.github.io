@@ -1,12 +1,14 @@
-import { Pair, Pairs } from "matter";
+import { Majster } from './majster';
+import { ItemType } from './ItemType.enum';
 
 export class ItemSelectionScene extends Phaser.Scene {
     title: Phaser.GameObjects.Text;
-
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
 
     index: number = 0;
-    selectableItems: [string, Phaser.GameObjects.Text][];
+    selectableItems: ItemType[]=[];
+    private equipmentText: {[key:number]:  Phaser.GameObjects.Text};
+
 
     wasDownDown: boolean = false;
     wasUpDown: boolean = false;
@@ -14,13 +16,15 @@ export class ItemSelectionScene extends Phaser.Scene {
     baseStyle: any;
     selectedStyle: any;
 
+    private majster: Majster;
+
     constructor() {
         super({
             key: "ItemSelectionScene"
         });
-
-        this.selectableItems = [["Kowadło", null], ["Imadło", null], ["Cegła", null], ["Śrubokręt", null]];
-
+        
+        this.selectableItems = Object.values(ItemType);
+        
         this.baseStyle = {
             font: '20px Arial Bold',
             align: 'center',
@@ -34,15 +38,18 @@ export class ItemSelectionScene extends Phaser.Scene {
         }
     }
 
+    init(params: any): void {
+        this.majster = params.majster;
+    }
+    
     create(): void {
-        var titleText: string = "Co wybierasz?";
-        this.title = this.add.text(150, 50, titleText,
-            {
-                font: '64px Arial Bold',
-                fill: '#FBFBAC'
-            });
-
         this.cursors = this.input.keyboard.createCursorKeys();
+
+        this.title = this.add.text(150, 50, "Co wybierasz?",
+        {
+            font: '32px Consolas Bold',
+            fill: '#FBFBAC'
+        });
 
         this.printItemsAndGetHandles();
     }
@@ -82,7 +89,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     private printItemsAndGetHandles() {
         var i = 0;
         this.selectableItems.forEach((itemNameHandle, i, _) => {
-            itemNameHandle[1] = this.printItemAndGetHandle(itemNameHandle[0], i, this.index == i);
+           this.printItemAndGetHandle(itemNameHandle, i, this.index == i);
         });
     }
 
@@ -94,9 +101,11 @@ export class ItemSelectionScene extends Phaser.Scene {
         return this.add.text(startX, y, itemName, selected ? this.selectedStyle : this.baseStyle);
     }
 
+
+
     private updatePrintedItems() {
         this.selectableItems.forEach((itemNameHandle, i, _) => {
-            itemNameHandle[1].setStyle(this.index == i ? this.selectedStyle : this.baseStyle);
+            //itemNameHandle[1].setStyle(this.index == i ? this.selectedStyle : this.baseStyle);
         })
     }
 };

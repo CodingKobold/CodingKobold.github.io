@@ -5,6 +5,7 @@ export class Majster {
 	majster: Phaser.Physics.Arcade.Sprite;
 	repairedItem: RepairedItem = null;
 	equipment: ItemType[];
+	maxItemNumber: number;
 
 	static image: string = 'images/majster.png';
 
@@ -45,6 +46,7 @@ export class Majster {
 
 	acceptRequest(repairedItem: RepairedItem): void{
 		this.repairedItem = repairedItem;
+		this.maxItemNumber = repairedItem.neededItems.length;
 	}
 
     setPosition(x: number, y: number): void{
