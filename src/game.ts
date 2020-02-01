@@ -10,7 +10,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     width: 1344,
     height: 720,
     parent: "game",
-    scene: [WelcomeScene, GameScene, ScoreScene, ItemListScene, ItemSelectionScene, HammeringScene],
+    scene: [WelcomeScene, GameScene, ScoreScene, ItemSelectionScene, HammeringScene],
     physics: {
         default: "arcade",
         arcade: {

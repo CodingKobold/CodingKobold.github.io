@@ -83,7 +83,10 @@ export class GameScene extends Phaser.Scene {
     update(): void {
         this.updateTime();
 
-        if (this.currentGameWindow === GameWindowFocus.Majster) {
+        if (this.currentGameWindow === GameWindowFocus.Items){
+            return;
+        }
+        else if (this.currentGameWindow === GameWindowFocus.Majster) {
             this.majster.move(this.cursors);
         }
         else if (this.currentGameWindow === GameWindowFocus.Dialog) {
@@ -463,8 +466,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     private takeTools(): void {
-        this.scene.run('ItemSelectionScene', { majster: this.majster });
-        this.scene.switch('ItemSelectionScene');
+        this.scene.launch('ItemSelectionScene', { majster: this.majster });
+        this.currentGameWindow = GameWindowFocus.Items;
     }
 
     private updateEquipment(): void {
