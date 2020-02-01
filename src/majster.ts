@@ -14,6 +14,7 @@ export class Majster {
 	constructor(sprite: Phaser.Physics.Arcade.Sprite) {
 		this.majster = sprite;
 		this.majster.setCollideWorldBounds(true);
+		this.maxItemNumber = 0;
 	}
 
 	move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void {

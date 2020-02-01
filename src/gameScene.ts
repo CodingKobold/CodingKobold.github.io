@@ -94,15 +94,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     prepareEquipment() {
-        this.add.text(900, 50,  "Ekwipunek Majstra:", { font: '18px Consolas' });
-        let y=80;
-        let ySpacing = 30;
-        this.equipmentText = {};
-        
-        Array.from(Array(Object.keys(ItemType).length/2).keys()).forEach(x => {
-            this.equipmentText[x] = this.add.text(900, y, x+1+ ". ....................") , { font: '18px Consolas' }
-            y += ySpacing;
-        })
+        this.add.text(900, 50, "Ekwipunek Majstra:", { font: '18px Consolas' });
+        this.updateEquipment();
     }
 
     private prepareGameShapes() {
@@ -330,7 +323,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.majster.majster, this.wardrobe, null, null, this);
     }
 
-    private updateTime(){
+    private updateTime(): void {
         this.gameTime.update(this.gameOverEvent.getProgress());
         this.remainingTimeText.setText(this.gameTime.getTime())
         
@@ -345,7 +338,7 @@ export class GameScene extends Phaser.Scene {
         this.scene.start('ScoreScene', { score: this.score });
     }
 
-    private takeOrder() {
+    private takeOrder(): void {
         if (this.majster.repairedItem !== null) {
             return;
         }
@@ -398,6 +391,7 @@ export class GameScene extends Phaser.Scene {
         let shouldUse = this.shouldUseFurniture(this.workbench);
         
         if (shouldUse) {
+            this.updateEquipment();
             let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
             this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
         }
@@ -429,5 +423,25 @@ export class GameScene extends Phaser.Scene {
     private takeTools(): void {
         this.scene.run('ItemSelectionScene', { majster: this.majster });
         this.scene.switch('ItemSelectionScene');
+    }
+
+    private updateEquipment(): void {
+        this.equipmentText = {};
+        
+        let y = 80;
+        let ySpacing = 30;
+
+        if (this.majster.maxItemNumber === 0) {
+            this.equipmentText[0] = this.add.text(900, y, "Pusto!!!") , { font: '18px Consolas' }
+        }
+
+        console.log(this.majster.maxItemNumber);
+        
+        Array.from(Array(this.majster.maxItemNumber).keys()).forEach(x => {
+            
+            this.equipmentText[x] = this.add.text(900, y, x + 1 + ". ....................") , { font: '18px Consolas' }
+            
+            y += ySpacing;
+        })
     }
 };
