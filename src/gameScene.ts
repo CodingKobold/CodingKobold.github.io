@@ -138,7 +138,7 @@ export class GameScene extends Phaser.Scene {
 
     private preparePieniazki(): void {
         this.add.text(900, 140, "Ciężko zarobione pieniądze:", { font: '28px Consolas' });
-        this.pieniazkiText = this.add.text(900, 175, `${this.pieniazki} złotych`,  { font: '40px Consolas Bold', fill: 'green' });
+        this.pieniazkiText = this.add.text(900, 175, `${this.pieniazki} złotych`,  { font: '40px Consolas', fill: 'green' });
     }
 
     private prepareGameShapes() {
@@ -153,7 +153,7 @@ export class GameScene extends Phaser.Scene {
         this.gameOverEvent = this.time.delayedCall(this.gameDuration, this.onGameOverEvent, [], this);
 
         this.add.text(900, 20,  "Czas do zamknięcia:", { font: '28px Consolas' });
-        this.remainingTimeText = this.add.text(900, 55, this.gameTime.getTime(),  { font: '40px Consolas Bold', fill: 'green' });
+        this.remainingTimeText = this.add.text(900, 55, this.gameTime.getTime(),  { font: '40px Consolas', fill: 'green' });
     }
 
     private prepareDialogs() {
@@ -384,9 +384,16 @@ export class GameScene extends Phaser.Scene {
 
     private prepareRoomItems() {
         this.workbench = this.physics.add.staticSprite(300, 200, 'table-1');
-        this.wardrobe = this.physics.add.staticSprite(700, 200, 'wardrobe-1');
-
         this.physics.add.collider(this.majster.majster, this.workbench, null, null, this);
+
+
+        let x = this.physics.add.staticSprite(732, 80, 'wardrobe-1');
+        this.physics.add.collider(this.majster.majster, x, null, null, this);
+
+        x = this.physics.add.staticSprite(816, 80, 'wardrobe-1');
+        this.physics.add.collider(this.majster.majster, x, null, null, this);
+
+        this.wardrobe = this.physics.add.staticSprite(774, 80, 'wardrobe-1');
         this.physics.add.collider(this.majster.majster, this.wardrobe, null, null, this);
     }
 
@@ -495,7 +502,7 @@ export class GameScene extends Phaser.Scene {
     private shouldUseFurniture(sprite: Phaser.Physics.Arcade.Sprite): boolean {
         let distanceToObject = Phaser.Math.Distance.Between(this.majster.majster.x, this.majster.majster.y, sprite.x, sprite.y);            
         
-        if (distanceToObject < 40.0) {
+        if (distanceToObject < 100.0) {
             return true;
         }
 
