@@ -68,12 +68,12 @@ export class HammeringScene extends Phaser.Scene {
 
     create() {
         this.add.image(650, 530, "deska").setDisplaySize(1200,200);
-        this.add.image(670, 80, "dialog-box").setDisplaySize(700,150);
+        this.add.image(715, 80, "dialog-box").setDisplaySize(700,150);
 
         this.add.text(this.screenSizeX / 2 - 250, 50, "PRZYBIJ GWOŹDZIA!",
             {
                 font: '64px Consolas',
-                fill: '#FBFBAC'
+                fill: '#000000'
             });
         this.cursors = this.input.keyboard.createCursorKeys();
         this.space = this.input.keyboard.addKey('SPACE');
