@@ -347,7 +347,8 @@ export class GameScene extends Phaser.Scene {
                 this.add.image(i, j, "c-center2");
             }
         }
-        this.add.image(230, 150, "kwiatek");
+        
+        this.walls.create(230, 150, "kwiatek");
 
             
 
