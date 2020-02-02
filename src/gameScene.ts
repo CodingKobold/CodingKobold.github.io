@@ -324,7 +324,10 @@ export class GameScene extends Phaser.Scene {
 
         
         //dywany
+        //drugi
+        this.add.image(500, 400, "c-corner-d2").setAngle(-90);
 
+        //pierwszy
         //d-góra
         this.add.image(192, 78, "c-corner");
         this.add.image(448, 78, "c-corner").setAngle(90);
