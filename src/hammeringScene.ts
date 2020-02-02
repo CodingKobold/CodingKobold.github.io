@@ -63,12 +63,14 @@ export class HammeringScene extends Phaser.Scene {
         this.load.image('mlotek', this.mlotekImage);
         this.load.image('gwozdz', this.gwozdzImage);
         this.load.image('deska', 'images/deska.png');
+        this.load.image('dialog-box', 'images/dialog-box.png');
     }
 
     create() {
         this.add.image(650, 530, "deska").setDisplaySize(1200,200);
+        this.add.image(670, 80, "dialog-box").setDisplaySize(700,150);
 
-        this.add.text(this.screenSizeX / 2 - 250, 50, "Wbij gwoździa!",
+        this.add.text(this.screenSizeX / 2 - 250, 50, "PRZYBIJ GWOŹDZIA!",
             {
                 font: '64px Consolas',
                 fill: '#FBFBAC'
