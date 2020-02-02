@@ -77,8 +77,6 @@ export class HammeringScene extends Phaser.Scene {
 
         this.deskaImage = this.add.image(650, 530, "deska").setDisplaySize(1200,200);
 
-        let tint = this.getTintFromItem();
-        this.deskaImage.setTint(tint);
         this.add.image(715, 80, "dialog-box").setDisplaySize(700,150);
 
         this.add.text(this.screenSizeX / 2 - 250, 50, "PRZYBIJ GWOŹDZIA!",
@@ -268,18 +266,5 @@ export class HammeringScene extends Phaser.Scene {
         }
 
         return false;
-    }
-
-    private getTintFromItem(): number {
-        switch (this.majster.repairedItem.repairedItemType) {
-            case RepairedItemType.Boot:
-                return 0xFF0000;
-            case RepairedItemType.Tv:
-                return 0x824E0A;
-            case RepairedItemType.Lamp:
-                return 0xD79C40;
-            case RepairedItemType.Baloon:
-                return 0xFF1010;
-        }
     }
 }
