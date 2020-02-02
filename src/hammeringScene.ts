@@ -62,9 +62,12 @@ export class HammeringScene extends Phaser.Scene {
     preload(): void {
         this.load.image('mlotek', this.mlotekImage);
         this.load.image('gwozdz', this.gwozdzImage);
+        this.load.image('deska', 'images/deska.png');
     }
 
     create() {
+        this.add.image(650, 530, "deska").setDisplaySize(1200,200);
+
         this.add.text(this.screenSizeX / 2 - 250, 50, "Wbij gwoździa!",
             {
                 font: '64px Consolas',
