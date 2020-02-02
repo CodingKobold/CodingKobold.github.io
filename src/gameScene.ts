@@ -451,7 +451,7 @@ export class GameScene extends Phaser.Scene {
 
     private showTakeAssignmentText(): void {
         if (!this.nieMaProblemuSaid) {
-            this.majsterDialogText.setText("Przyjmij zlecenie");
+            this.majsterDialogText.setText("Przyjmij zlecenie [SPACJA]");
         }
     }
 
