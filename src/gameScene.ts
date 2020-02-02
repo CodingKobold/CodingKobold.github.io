@@ -18,6 +18,10 @@ export class GameScene extends Phaser.Scene {
     
     // majster related
     private majster: Majster;
+
+    // fixed item related
+    // fill
+
     // equipment related
     private equipmentText: {[key:number]:  Phaser.GameObjects.Text};
 
