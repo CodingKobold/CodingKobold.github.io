@@ -286,6 +286,7 @@ export class GameScene extends Phaser.Scene {
 
         this.load.image('c-corner', 'images/carpets/corner.png');
         this.load.image('c-center', 'images/carpets/center.png');
+        this.load.image('c-center2', 'images/carpets/center2.png');
     }
 
     private drawRoomInitial() {
@@ -306,7 +307,38 @@ export class GameScene extends Phaser.Scene {
         }
 
         //dywany
-        this.add.image(200, 78, "c-corner");
+
+        //d-góra
+        this.add.image(192, 78, "c-corner");
+        this.add.image(448, 78, "c-corner").setAngle(90);
+        for (var i=208; i<=432; i+=16){
+            this.add.image(i, 78, "c-center");
+        }
+        //lewy
+        for (var i=94; i<=174; i+=16){
+            this.add.image(192, i, "c-center").setAngle(-90);
+        }
+        //prawy
+        for (var i=94; i<=174; i+=16){
+            this.add.image(448, i, "c-center").setAngle(90);
+        }
+        //-d-dół   
+        this.add.image(192, 190, "c-corner").setAngle(-90);
+        this.add.image(448, 190, "c-corner").setAngle(180);
+        for (var i=208; i<=432; i+=16){
+            this.add.image(i, 190, "c-center").setAngle(180);
+        }
+        //środek
+        for (var j=94; j<=174; j+=16){
+            for (var i=208; i<=432; i+=16){
+                this.add.image(i, j, "c-center2");
+            }
+        }
+
+            
+
+        
+        
         
 
         //środkowy murek
