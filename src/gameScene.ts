@@ -283,6 +283,9 @@ export class GameScene extends Phaser.Scene {
 
         this.load.image('mini-wardrobe', 'images/furniture/szafeczka.png');
         this.load.image('mini-wardrobe', 'images/furniture/szafeczka2.png');
+
+        this.load.image('c-corner', 'images/carpets/corner.png');
+        this.load.image('c-center', 'images/carpets/center.png');
     }
 
     private drawRoomInitial() {
@@ -301,6 +304,10 @@ export class GameScene extends Phaser.Scene {
                 this.add.image(i, j, "floor-" + randNumber);
             }
         }
+
+        //dywany
+        this.add.image(300, 150, "c-corner");
+        
 
         //środkowy murek
         for (var i = leftStartPoint + 27; i <= rightStopPoint - 16; i += 16) {
