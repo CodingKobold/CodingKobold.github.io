@@ -122,7 +122,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareEquipment(): void {
-        this.add.text(900, 300, "Ekwipunek Majstra:", { font: '28px Consolas' });
+        this.add.text(1000, 300, "Ekwipunek Majstra", { font: '28px Consolas' });
 
         let y = 350;
         let ySpacing = 40;
