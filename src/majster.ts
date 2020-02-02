@@ -81,4 +81,8 @@ export class Majster {
 			frameRate: 10,
 			repeat: -1});
 	}
+
+	clearEquipment(): void {
+		this.equipment = [];
+	}
 }

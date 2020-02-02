@@ -1,4 +1,10 @@
+import { Majster } from "./majster";
+import { GameWindowFocus } from "./gameWindowFocus.enum";
+import { GameStep } from "./gameStep.enum";
+
 export class HammeringScene extends Phaser.Scene {
+    majster: Majster;
+
     readonly mlotekImage: string = 'images/hammer.png';
     readonly gwozdzImage: string = 'images/nail.png';
 
@@ -49,6 +55,10 @@ export class HammeringScene extends Phaser.Scene {
         this.mlotekPositionsX =
             [...Array(5).keys()]
                 .map((v, i, _) => this.mlotekMargin + interval * i);
+    }
+
+    init(params: any): void {
+        this.majster = params.majster;
     }
 
     preload(): void {
@@ -123,9 +133,10 @@ export class HammeringScene extends Phaser.Scene {
         this.time.addEvent({ 
             delay: 500, 
             callback: () => {
-                if(this.drivenGwozdzie == this.gwozdziesToWin){
-                    this.scene.switch("GameScene");
-            }}, 
+                if (this.drivenGwozdzie == this.gwozdziesToWin) {
+                    this.exit();
+                }
+            }, 
             callbackScope: this, 
             repeat: 0 
         });
@@ -207,5 +218,14 @@ export class HammeringScene extends Phaser.Scene {
                     .setScale(this.gwozdzScale);
             }
         });
+    }
+
+    private exit(): void {
+        let gameScene: any = this.scene.get('GameScene');
+        this.majster.clearEquipment();
+        gameScene.currentGameWindow = GameWindowFocus.Majster;
+        gameScene.currentGameStep = GameStep.OrderReady;
+        gameScene.updateEquipment();
+        this.scene.stop();
     }
 }
