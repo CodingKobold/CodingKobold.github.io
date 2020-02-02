@@ -306,7 +306,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         //dywany
-        this.add.image(300, 150, "c-corner");
+        this.add.image(200, 78, "c-corner");
         
 
         //środkowy murek
