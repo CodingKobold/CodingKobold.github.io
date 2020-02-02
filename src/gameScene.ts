@@ -317,7 +317,7 @@ export class GameScene extends Phaser.Scene {
             }
         }
 
-        this.add.image(192, 78, "kwiatek");
+        
         //dywany
 
         //d-góra
@@ -346,6 +346,7 @@ export class GameScene extends Phaser.Scene {
                 this.add.image(i, j, "c-center2");
             }
         }
+        this.add.image(230, 150, "kwiatek");
 
             
 
