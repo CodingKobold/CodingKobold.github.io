@@ -137,8 +137,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     private preparePieniazki(): void {
-        this.add.text(900, 140, "Ciężko zarobione pieniądze:", { font: '28px Consolas' });
-        this.pieniazkiText = this.add.text(900, 175, `${this.pieniazki} złotych`,  { font: '40px Consolas', fill: 'green' });
+        this.add.text(915, 160, "Ciężko zarobione pieniądze", { font: '28px Consolas' });
+        this.pieniazkiText = this.add.text(1025, 195, `${this.pieniazki} PLN`,  { font: '70px Consolas', fill: 'green' });
     }
 
     private prepareGameShapes() {
