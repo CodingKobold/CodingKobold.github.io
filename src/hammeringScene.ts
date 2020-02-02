@@ -1,6 +1,7 @@
 import { Majster } from "./majster";
 import { GameWindowFocus } from "./gameWindowFocus.enum";
 import { GameStep } from "./gameStep.enum";
+import { RepairedItemType } from "./repairedItemType.enum";
 
 export class HammeringScene extends Phaser.Scene {
     majster: Majster;
@@ -44,6 +45,8 @@ export class HammeringScene extends Phaser.Scene {
     space: Phaser.Input.Keyboard.Key;
     hand: any;
     mlotek: Phaser.Physics.Arcade.Sprite;
+    
+    private deskaImage: Phaser.GameObjects.Image;
 
     constructor() {
         super({ key: 'HammeringScene' });
@@ -67,7 +70,15 @@ export class HammeringScene extends Phaser.Scene {
     }
 
     create() {
-        this.add.image(650, 530, "deska").setDisplaySize(1200,200);
+
+        if (!!this.deskaImage) {
+            this.deskaImage.destroy();
+        }
+
+        this.deskaImage = this.add.image(650, 530, "deska").setDisplaySize(1200,200);
+
+        let tint = this.getTintFromItem();
+        this.deskaImage.setTint(tint);
         this.add.image(715, 80, "dialog-box").setDisplaySize(700,150);
 
         this.add.text(this.screenSizeX / 2 - 250, 50, "PRZYBIJ GWOŹDZIA!",
@@ -257,5 +268,18 @@ export class HammeringScene extends Phaser.Scene {
         }
 
         return false;
+    }
+
+    private getTintFromItem(): number {
+        switch (this.majster.repairedItem.repairedItemType) {
+            case RepairedItemType.Boot:
+                return 0xFF0000;
+            case RepairedItemType.Tv:
+                return 0x824E0A;
+            case RepairedItemType.Lamp:
+                return 0xD79C40;
+            case RepairedItemType.Baloon:
+                return 0xFF1010;
+        }
     }
 }

@@ -372,7 +372,6 @@ export class GameScene extends Phaser.Scene {
                 this.add.image(i, j, "c-center2-d2");
             }
         }
-        this.add.image(580, 375, "cat").setDisplaySize(50,50);
         
         
 
@@ -403,7 +402,8 @@ export class GameScene extends Phaser.Scene {
                 this.add.image(i, j, "c-center2");
             }
         }
-        
+
+        this.walls.create(580, 375, "cat").setDisplaySize(50,50);
         this.walls.create(230, 150, "kwiatek");
 
         //środkowy murek
@@ -685,6 +685,10 @@ export class GameScene extends Phaser.Scene {
             return;
         }
 
+        if (this.currentGameStep === GameStep.OrderReady) {
+            return;
+        }
+
         let shouldUse = this.shouldUseFurniture(this.workbench);
 
         if (shouldUse) {
@@ -711,6 +715,10 @@ export class GameScene extends Phaser.Scene {
 
     private checkClosestWardrobe(): void {
         if (this.majster.repairedItem === null) {
+            return;
+        }
+
+        if (this.currentGameStep === GameStep.OrderReady) {
             return;
         }
 
