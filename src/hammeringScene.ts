@@ -30,7 +30,7 @@ export class HammeringScene extends Phaser.Scene {
     readonly gwozdzPositionY = this.screenSizeY / 2 + 100;
     gwozdziesToWin;
     
-    private drivenGwozdzie = 0;
+    private drivenGwozdzie;
 
     //TODO: Consider some gwozdzie needing more than one smash to finish
     gwozdzPresenceBitMapHandles: [number, Phaser.Physics.Arcade.Sprite][] =
@@ -57,7 +57,6 @@ export class HammeringScene extends Phaser.Scene {
 
     init(params: any): void {
         this.majster = params.majster;
-        this.gwozdziesToWin = this.majster.equipment.length;
     }
 
     preload(): void {
@@ -74,15 +73,16 @@ export class HammeringScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.space = this.input.keyboard.addKey('SPACE');
 
+        this.gwozdziesToWin = this.majster.equipment.length;
+        this.drivenGwozdzie = 0;
+
         this.mlotek = this.physics.add.sprite(this.mlotekPositionsX[this.mlotekIndexX], this.mlotekPositionY, 'mlotek');
 
         this.mlotek.scale = 0.5;
         this.mlotek.setX(this.mlotekPositionsX[this.mlotekIndexX]);
 
-        let delay = Math.random() * 1500 + 500;
+        let delay = 100;
         this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this, repeat: 0 });
-
-        console.log("kek");
     }
 
     update() {
