@@ -42,6 +42,8 @@ export class GameScene extends Phaser.Scene {
     private wardrobe2Items: ItemType[];
     private wardrobe3Items: ItemType[];
 
+    private repairedItemImage: Phaser.GameObjects.Image;
+
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
     private gameTime: GameTime;
@@ -83,6 +85,11 @@ export class GameScene extends Phaser.Scene {
         this.load.image('client2', 'images/clients/client2.png');
         this.load.image('client3', 'images/clients/client3.png');
         this.load.image('client4', 'images/clients/client4.png');
+
+        this.load.image('tv', 'images/items/tv.png');
+        this.load.image('but', 'images/items/shoe.png');
+        this.load.image('lampa', 'images/items/lamp.png');
+        this.load.image('balon', 'images/items/baloon.png');
     }
 
     create(): void {
@@ -512,6 +519,7 @@ export class GameScene extends Phaser.Scene {
         if (this.currentGameStep === GameStep.OrderReady) {
             this.updatePieniazki();
             this.majster.repairedItem = null;
+            this.repairedItemImage.destroy();
             this.currentGameStep = GameStep.Start;
         }
     }
@@ -523,7 +531,10 @@ export class GameScene extends Phaser.Scene {
 
         this.clearResponse();
 
-        this.majster.acceptRequest(new RepairedItem())
+        let repairedItem = new RepairedItem()
+
+        this.majster.acceptRequest(repairedItem);
+        this.repairedItemImage = this.add.image(365, 465, repairedItem.repairedItemType.toLowerCase()).setDisplaySize(40,40);
         this.currentGameWindow = GameWindowFocus.Dialog;
         this.nieMaProblemuSaid = false;
         this.majster.stop();
@@ -560,6 +571,7 @@ export class GameScene extends Phaser.Scene {
         this.time.addEvent({ delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
 
         this.time.addEvent({ startAt: -2500, callback: this.showInvestigateHint, callbackScope: this, repeat:0 });
+        this.repairedItemImage.setPosition(355, 100);
     }
 
     private showInvestigateHint(){
