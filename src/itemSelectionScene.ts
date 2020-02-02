@@ -3,13 +3,16 @@ import { ItemType } from './ItemType.enum';
 import { GameWindowFocus } from './gameWindowFocus.enum';
 
 export class ItemSelectionScene extends Phaser.Scene {
-    cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+    private esc: Phaser.Input.Keyboard.Key;
 
     private index: number = 0;
     private wordrobeToolActive: boolean;
     private wordrobeTools: ItemType[];
     private wordrobeTexts: Phaser.GameObjects.Text[];
     private majsterToolsTexts: Phaser.GameObjects.Text[];
+
+
 
     baseStyle: any = {
         font: '20px Consolas',
@@ -36,8 +39,15 @@ export class ItemSelectionScene extends Phaser.Scene {
     
     create(): void {
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.esc = this.input.keyboard.addKey('Esc'); 
 
         this.add.text(150, 50, "Co wybierasz?",
+        {
+            font: '32px Consolas',
+            fill: '#FBFBAC'
+        });
+
+        this.add.text(150, 450, "Naciśnij Esc żeby wyjść",
         {
             font: '32px Consolas',
             fill: '#FBFBAC'
@@ -53,7 +63,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(this.cursors.left) && this.wordrobeTools.length!==0)
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.left) && !!this.wordrobeToolActive && this.wordrobeTools.length!==0)
         {
            this.wordrobeToolActive=true;
            this.index = 0;
@@ -61,7 +71,7 @@ export class ItemSelectionScene extends Phaser.Scene {
             this.updateWordrobeItems();
             this.updateMajsterItems();
         }
-        else if (Phaser.Input.Keyboard.JustDown(this.cursors.right) && this.majster.equipment.length!==0)
+        else if (Phaser.Input.Keyboard.JustDown(this.cursors.right) && this.wordrobeToolActive && this.majster.equipment.length!==0)
         {
             this.wordrobeToolActive=false;
             this.index = 0;
@@ -83,7 +93,7 @@ export class ItemSelectionScene extends Phaser.Scene {
             this.updateMajsterItems();
         }
 
-        if (Phaser.Input.Keyboard.JustDown(this.cursors.shift))
+        if (Phaser.Input.Keyboard.JustDown(this.esc))
         {
             this.exit();
         }
@@ -109,16 +119,28 @@ export class ItemSelectionScene extends Phaser.Scene {
         this.majster.equipment = this.majster.equipment.filter(x => x != item);
             
         this.index = this.index >= this.majster.equipment.length ? this.wordrobeTools.length-1 : 0;
-
+        
+        if (this.majster.equipment.length === 0){
+            this.wordrobeToolActive=true;
+        }
     }
 
     private ChooseTool() {
+        if (this.majster.equipment.length >= this.majster.maxItemNumber)
+        {
+            return;
+        }
+
         var item = this.wordrobeTools[this.index];
 
         this.majster.equipment.push(item);
         this.wordrobeTools = this.wordrobeTools.filter(x => x != item);
             
         this.index = this.index >= this.wordrobeTools.length ? this.wordrobeTools.length-1 : 0;
+
+        if (this.wordrobeTools.length === 0){
+            this.wordrobeToolActive=false;
+        }
     }
 
     private exit(){
