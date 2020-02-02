@@ -89,6 +89,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('client4', 'images/clients/client4.png');
 
         this.load.image('tv', 'images/items/tv.png');
+        this.load.image('rubbish', 'images/rubishHil.png');
         this.load.image('but', 'images/items/shoe.png');
         this.load.image('lampa', 'images/items/lamp.png');
         this.load.image('balon', 'images/items/baloon.png');

@@ -224,11 +224,13 @@ export class HammeringScene extends Phaser.Scene {
     }
 
     private exit(): void {
+        let gameScene: any = this.scene.get('GameScene');
+
         if (this.checkIfItemIsDestroyed()) {
             this.majster.repairedItem.isDestroyed = true;
+            gameScene.repairedItemImage.setTexture('rubbish').setDisplaySize(40,40);
         }
 
-        let gameScene: any = this.scene.get('GameScene');
         this.majster.clearEquipment();
         gameScene.currentGameWindow = GameWindowFocus.Majster;
         gameScene.currentGameStep = GameStep.OrderReady;
