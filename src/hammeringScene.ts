@@ -36,9 +36,9 @@ export class HammeringScene extends Phaser.Scene {
     gwozdzPresenceBitMapHandles: [number, Phaser.Physics.Arcade.Sprite][] =
         [...Array(this.mlotekPositionXCount).keys()].map(() => [0, null]);
 
-    isSmashing = false;
+    isSmashing: boolean;
     // this gets counted so we can determine whether the młotek stopped moving
-    smashingProgress: number = 0;
+    smashingProgress: number;
 
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     space: Phaser.Input.Keyboard.Key;
@@ -88,6 +88,9 @@ export class HammeringScene extends Phaser.Scene {
 
         let delay = 100;
         this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this, repeat: 0 });
+
+        this.isSmashing = false;
+        this.smashingProgress = 0;
     }
 
     update() {
@@ -227,7 +230,7 @@ export class HammeringScene extends Phaser.Scene {
 
     private exit(): void {
         let gameScene: any = this.scene.get('GameScene');
-
+        
         if (this.checkIfItemIsDestroyed()) {
             this.majster.repairedItem.isDestroyed = true;
             gameScene.repairedItemImage.setTexture('rubbish').setDisplaySize(40,40);
