@@ -55,12 +55,6 @@ export class ItemSelectionScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.esc = this.input.keyboard.addKey('Esc'); 
 
-        // this.add.text(150, 50, "Co wybierasz?",
-        // {
-        //     font: '32px Consolas',
-        //     fill: '#FBFBAC'
-        // });
-
         this.add.text(150, 476, "[ESC] Wyjście",
         {
             font: '24px Consolas',
@@ -133,10 +127,12 @@ export class ItemSelectionScene extends Phaser.Scene {
             this.wordrobeTools.push(item);
             this.majster.equipment = this.majster.equipment.filter(x => x != item);
                 
-            this.index = this.index >= this.majster.equipment.length ? this.wordrobeTools.length-1 : 0;
+            this.index = this.index >= this.majster.equipment.length ? this.majster.equipment.length-1 : this.index;
             
+            console.log(this.majster.equipment);
             if (this.majster.equipment.length === 0){
                 this.wordrobeToolActive=true;
+                this.index=0;
             }
         }
     }
@@ -152,10 +148,11 @@ export class ItemSelectionScene extends Phaser.Scene {
         this.majster.equipment.push(item);
         this.wordrobeTools = this.wordrobeTools.filter(x => x != item);
             
-        this.index = this.index >= this.wordrobeTools.length ? this.wordrobeTools.length-1 : 0;
+        this.index = this.index >= this.wordrobeTools.length ? this.wordrobeTools.length-1 : this.index;
 
         if (this.wordrobeTools.length === 0){
             this.wordrobeToolActive=false;
+            this.index=0;
         }
     }
 
