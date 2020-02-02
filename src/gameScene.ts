@@ -31,7 +31,7 @@ export class GameScene extends Phaser.Scene {
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
     private gameTime: GameTime;
-    private gameDuration: number = 2*60*1000; // 2 min
+    private gameDuration: number;
     private gameOverEvent: Phaser.Time.TimerEvent;
 
     // dialog related
@@ -42,7 +42,8 @@ export class GameScene extends Phaser.Scene {
     private nieMaProblemuSaid: boolean;
 
     // score related
-    private score: number = 100;
+    private pieniazki: number;
+    private pieniazkiText: Phaser.GameObjects.Text;
 
     constructor() {
         super({
@@ -53,6 +54,8 @@ export class GameScene extends Phaser.Scene {
     init(): void {
         this.graphics = this.add.graphics();
         this.currentGameWindow = GameWindowFocus.Majster;
+        this.pieniazki = 0;
+        this.gameDuration = 4 * 60 * 1000; // 2 min
     }
 
     preload(): void {         
@@ -78,6 +81,7 @@ export class GameScene extends Phaser.Scene {
         this.prepareDialogs();
         this.prepareTime();
         this.prepareEquipment();
+        this.preparePieniazki();
     }
     
     update(): void {
@@ -105,19 +109,24 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    prepareEquipment() {
-        this.add.text(900, 300, "Ekwipunek Majstra:", { font: '24px Consolas' });
+    private prepareEquipment(): void {
+        this.add.text(900, 300, "Ekwipunek Majstra:", { font: '28px Consolas' });
 
         let y = 350;
         let ySpacing = 40;
         this.equipmentText = {};
 
         Array.from(Array(5).keys()).forEach(x => {
-            this.equipmentText[x] = this.add.text(900, y, ""), { font: '24px Consolas' };
+            this.equipmentText[x] = this.add.text(900, y, ""), { font: '28px Consolas' };
             y += ySpacing;
         })
 
         this.updateEquipment();
+    }
+
+    private preparePieniazki(): void {
+        this.add.text(900, 140, "Ciężko zarobione pieniądze:", { font: '28px Consolas' });
+        this.pieniazkiText = this.add.text(900, 175, `${this.pieniazki} złotych`,  { font: '40px Consolas Bold', fill: 'green' });
     }
 
     private prepareGameShapes() {
@@ -131,8 +140,8 @@ export class GameScene extends Phaser.Scene {
         this.gameTime = new GameTime();
         this.gameOverEvent = this.time.delayedCall(this.gameDuration, this.onGameOverEvent, [], this);
 
-        this.add.text(900, 20,  "Czas do zamknięcia:", { font: '24px Consolas' });
-        this.remainingTimeText = this.add.text(1180, 12, this.gameTime.getTime(),  { font: '36px Consolas Bold', fill: 'green' });
+        this.add.text(900, 20,  "Czas do zamknięcia:", { font: '28px Consolas' });
+        this.remainingTimeText = this.add.text(900, 55, this.gameTime.getTime(),  { font: '40px Consolas Bold', fill: 'green' });
     }
 
     private prepareDialogs() {
@@ -381,7 +390,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     onGameOverEvent(): void {
-        this.scene.start('ScoreScene', { score: this.score });
+        this.scene.start('ScoreScene', { score: this.pieniazki });
     }
 
     private takeOrder(): void {

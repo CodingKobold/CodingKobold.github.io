@@ -26,7 +26,7 @@ export class Dialog {
 
     createResponse(): number {
         this.reset();
-        this.currentRequest = this.majsterResponse;
+        this.currentRequest = `- ${this.majsterResponse}`;
 
         return this.currentRequest.length;
     }
@@ -58,7 +58,7 @@ export class Dialog {
     }
 
     private generateNeededItemsDialog(items: ItemType[]): string {
-        var dialog = "Potrzebuję ";
+        var dialog = "- Potrzebuję ";
 
         if (items.length === 1) {
             return dialog.concat(`${items[0]}.`);
