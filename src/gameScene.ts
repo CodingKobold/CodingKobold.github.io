@@ -225,7 +225,7 @@ export class GameScene extends Phaser.Scene {
     itemTakenFromWardrobe(){
         if(this.hintsEnabled){ 
             this.removeHintArrows();
-            this.showHint(HintType.NaprawPrzedmiot, [[350, 70]]); 
+            this.showHint(HintType.NaprawPrzedmiot, [[350, 60]]); 
         }
     }
 
@@ -667,7 +667,7 @@ export class GameScene extends Phaser.Scene {
             callback: this.showHint,
             callbackScope: this,
             repeat: 0,
-            args: [HintType.ZbadajPrzedmiot, [[350, 70]]]
+            args: [HintType.ZbadajPrzedmiot, [[350, 60]]]
         });
     }
 
