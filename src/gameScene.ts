@@ -59,7 +59,7 @@ export class GameScene extends Phaser.Scene {
         this.graphics = this.add.graphics();
         this.currentGameWindow = GameWindowFocus.Majster;
         this.pieniazki = 0;
-        this.gameDuration = 4 * 60 * 1000; // 2 min
+        this.gameDuration = 1 * 30 * 1000; // 2 min
     }
 
     preload(): void {         
@@ -394,6 +394,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     onGameOverEvent(): void {
+        this.scene.stop('ItemSelectionScene')
+        this.scene.stop('HammerScene')
         this.scene.start('ScoreScene', { score: this.pieniazki });
     }
 
