@@ -287,6 +287,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('c-corner', 'images/carpets/corner.png');
         this.load.image('c-center', 'images/carpets/center.png');
         this.load.image('c-center2', 'images/carpets/center2.png');
+
+        this.load.image('kwiatek', 'images/furniture/kwiatek.png');
     }
 
     private drawRoomInitial() {
@@ -306,6 +308,7 @@ export class GameScene extends Phaser.Scene {
             }
         }
 
+        this.add.image(192, 78, "kwiatek");
         //dywany
 
         //d-góra
