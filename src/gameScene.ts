@@ -144,7 +144,7 @@ export class GameScene extends Phaser.Scene {
     private prepareGameShapes() {
         let itemsArea: Phaser.Geom.Rectangle = new Phaser.Geom.Rectangle(880, 0, 464, 720);
 
-        this.graphics.fillStyle(0x000000);
+        this.graphics.fillStyle(0x2e2e1f);
         this.graphics.fillRectShape(itemsArea);
     }
 
@@ -152,8 +152,8 @@ export class GameScene extends Phaser.Scene {
         this.gameTime = new GameTime();
         this.gameOverEvent = this.time.delayedCall(this.gameDuration, this.onGameOverEvent, [], this);
 
-        this.add.text(900, 20,  "Czas do zamknięcia:", { font: '28px Consolas' });
-        this.remainingTimeText = this.add.text(900, 55, this.gameTime.getTime(),  { font: '40px Consolas', fill: 'green' });
+        this.add.text(990, 20,  "Czas do zamknięcia", { font: '28px Consolas' });
+        this.remainingTimeText = this.add.text(975, 55, this.gameTime.getTime(),  { font: '70px Consolas' });
     }
 
     private prepareDialogs() {
