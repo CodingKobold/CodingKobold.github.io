@@ -28,7 +28,7 @@ export class HammeringScene extends Phaser.Scene {
     mlotekAngle: number = 0;
 
     readonly gwozdzPositionY = this.screenSizeY / 2 + 100;
-    readonly gwozdziesToWin = 2;
+    gwozdziesToWin;
     
     private drivenGwozdzie = 0;
 
@@ -45,8 +45,6 @@ export class HammeringScene extends Phaser.Scene {
     hand: any;
     mlotek: Phaser.Physics.Arcade.Sprite;
 
-    gwozdzDrivenEvent: Phaser.Time.TimerEvent;
-
     constructor() {
         super({ key: 'HammeringScene' });
 
@@ -59,6 +57,7 @@ export class HammeringScene extends Phaser.Scene {
 
     init(params: any): void {
         this.majster = params.majster;
+        this.gwozdziesToWin = this.majster.equipment.length;
     }
 
     preload(): void {
@@ -74,7 +73,6 @@ export class HammeringScene extends Phaser.Scene {
             });
         this.cursors = this.input.keyboard.createCursorKeys();
         this.space = this.input.keyboard.addKey('SPACE');
-
 
         this.mlotek = this.physics.add.sprite(this.mlotekPositionsX[this.mlotekIndexX], this.mlotekPositionY, 'mlotek');
 
