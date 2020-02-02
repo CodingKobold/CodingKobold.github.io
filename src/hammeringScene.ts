@@ -1,7 +1,6 @@
 export class HammeringScene extends Phaser.Scene {
-    readonly mlotekImage: string = 'images/mlotek_czarny.png';
-    readonly gwozdzImage: string = 'images/gwozdz_czarny.png';
-    readonly gwozdzWbityImage: string = 'images/gwozdz_wbity_czarny.png';
+    readonly mlotekImage: string = 'images/hammer.png';
+    readonly gwozdzImage: string = 'images/nail.png';
 
     readonly mlotekScale = 0.5;
     readonly gwozdzScale = 0.5;
@@ -23,7 +22,9 @@ export class HammeringScene extends Phaser.Scene {
     mlotekAngle: number = 0;
 
     readonly gwozdzPositionY = this.screenSizeY / 2 + 100;
-    readonly gwozdzReappearingTimes = 3;
+    readonly gwozdziesToWin = 2;
+    
+    private drivenGwozdzie = 0;
 
     //TODO: Consider some gwozdzie needing more than one smash to finish
     gwozdzPresenceBitMapHandles: [number, Phaser.Physics.Arcade.Sprite][] =
@@ -53,7 +54,6 @@ export class HammeringScene extends Phaser.Scene {
     preload(): void {
         this.load.image('mlotek', this.mlotekImage);
         this.load.image('gwozdz', this.gwozdzImage);
-        this.load.image('gwozdz_wbity', this.gwozdzWbityImage);
     }
 
     create() {
@@ -72,7 +72,7 @@ export class HammeringScene extends Phaser.Scene {
         this.mlotek.setX(this.mlotekPositionsX[this.mlotekIndexX]);
 
         let delay = Math.random() * 1500 + 500;
-        this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this, repeat: 1 });
+        this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this, repeat: 0 });
     }
 
     update() {
@@ -94,10 +94,46 @@ export class HammeringScene extends Phaser.Scene {
         }
     }
 
+    private moveMlotekRight() {
+        if (this.mlotekIndexX < this.mlotekPositionsX.length - 1) {
+            this.mlotek.x = this.mlotekPositionsX[++this.mlotekIndexX];
+            this.mlotek.angle = 0;
+        }
+    }
+    private moveMlotekLeft() {
+        if (this.mlotekIndexX > 0) {
+            this.mlotek.x = this.mlotekPositionsX[--this.mlotekIndexX];
+            this.mlotek.angle = 0;
+        }
+    }
+
+    private driveGwozdz(position: number) {
+        if (position >= this.mlotekPositionXCount || position < 0) { return; }
+        let bit = 0;
+
+        if (this.gwozdzPresenceBitMapHandles[position][bit] == 1) {
+            this.gwozdzPresenceBitMapHandles[position][bit] = 0;
+            this.drivenGwozdzie += 1;
+            let delay = Math.random() * 1900 + 100;
+            this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this, repeat: 0 });
+        }
+        this.smash();
+
+        // handle finished game
+        this.time.addEvent({ 
+            delay: 500, 
+            callback: () => {
+                if(this.drivenGwozdzie == this.gwozdziesToWin){
+                    this.scene.switch("GameScene");
+            }}, 
+            callbackScope: this, 
+            repeat: 0 
+        });
+    }
+
     private smash() {
         this.smashingProgress = 1;
         this.makeSwing();
-        // this.time.addEvent({ delay: 800, callback: this.updateGwozdzSprites, callbackScope: this, repeat: 0 });
     }
 
     private makeSwing() {
@@ -130,34 +166,12 @@ export class HammeringScene extends Phaser.Scene {
                         repeat: 5
                     });
                     // create new gwozdzie only after the mlotek has returned to it's original position
-                    this.time.addEvent({startAt: -100, callback: () => {this.updateGwozdzSprites}, repeat: 0});
+                    // this.time.addEvent({startAt: -100, callback: () => {this.updateGwozdzSprites}, repeat: 0});
+                    this.updateGwozdzSprites();
                 }
             },
             callbackScope: this, repeat: stepCount
         });
-
-    }
-
-    private drive() {
-        this.mlotek.setAngularVelocity(-800);
-    }
-
-    private stopTheMlotek() {
-        this.mlotek.setAngularVelocity(0);
-        this.isSmashing = false;
-    }
-
-    private moveMlotekRight() {
-        if (this.mlotekIndexX < this.mlotekPositionsX.length - 1) {
-            this.mlotek.x = this.mlotekPositionsX[++this.mlotekIndexX];
-            this.mlotek.angle = 0;
-        }
-    }
-    private moveMlotekLeft() {
-        if (this.mlotekIndexX > 0) {
-            this.mlotek.x = this.mlotekPositionsX[--this.mlotekIndexX];
-            this.mlotek.angle = 0;
-        }
     }
 
     private makeGwozdziesRespawnIfNeeded() {
@@ -179,20 +193,6 @@ export class HammeringScene extends Phaser.Scene {
         this.updateGwozdzSprites();
     }
 
-    private driveGwozdz(position: number) {
-        if (position >= this.mlotekPositionXCount || position < 0) { return; }
-        let bit = 0;
-
-        if (this.gwozdzPresenceBitMapHandles[position][bit] == 1) {
-            this.gwozdzPresenceBitMapHandles[position][bit] = 0;
-            // make gwozdz appear after the delay
-        }
-        this.smash();
-
-        let delay = Math.random() * 1500 + 500;
-        this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this });
-    }
-
     private updateGwozdzSprites() {
         this.gwozdzPresenceBitMapHandles.forEach((val, i) => {
             // remove gwozdz if it needed
@@ -200,7 +200,6 @@ export class HammeringScene extends Phaser.Scene {
                 val[1].destroy();
                 val[1] = null;
             }
-
             // add gwozdz if needed
             if (val[0] == 1 && val[1] == null) {
                 // a magic value has to be subtracted from mlotek position
@@ -208,13 +207,5 @@ export class HammeringScene extends Phaser.Scene {
                     .setScale(this.gwozdzScale);
             }
         });
-        // mlotek has to be reinitialized to drawn over gwoździe
-        this.reinitializeMlotek()
-    }
-
-    private reinitializeMlotek() {
-        if(this.mlotek != null) { this.mlotek.destroy(); }
-        this.mlotek = this.physics.add.sprite(this.mlotekPositionsX[this.mlotekIndexX], this.mlotekPositionY, 'mlotek')
-            .setScale(0.5);
     }
 }
