@@ -403,6 +403,10 @@ export class GameScene extends Phaser.Scene {
             }
         }
 
+        this.walls.create(560, 35, 'c-center2-d2');
+        this.walls.create(560, 375, 'c-center2-d2');
+        this.walls.create(580, 350, 'c-center2-d2');
+        this.walls.create(580, 375, 'c-center2-d2');
         this.walls.create(580, 375, "cat").setDisplaySize(50,50);
         this.walls.create(230, 150, "kwiatek");
 
