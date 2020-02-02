@@ -159,6 +159,9 @@ export class ItemSelectionScene extends Phaser.Scene {
     private exit(){
         let gameScene:any = this.scene.get('GameScene');
 
+        if(this.majster.equipment.length > 0){  
+            gameScene.itemTakenFromWardrobe(); 
+        }
         gameScene.currentGameWindow = GameWindowFocus.Majster;
         this.scene.stop();
     }
