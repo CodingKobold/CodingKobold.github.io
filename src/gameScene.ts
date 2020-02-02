@@ -7,19 +7,20 @@ import { GameWindowFocus } from "./gameWindowFocus.enum";
 import { RepairedItem } from './repairedItem';
 import { RepairedItemType } from './repairedItemType.enum';
 import { GameStep } from "./gameStep.enum";
+import { HintType } from "./hintTypes.enum";
 import { ItemType } from './ItemType.enum';
 
 export class GameScene extends Phaser.Scene {
     // game related
     private currentGameStep: GameStep;
-    
+
     // scene related
     private currentGameWindow: GameWindowFocus;
 
     // keyboard related
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     private actionKey: Phaser.Input.Keyboard.Key;
-    
+
     // majster related
     private majster: Majster;
 
@@ -27,7 +28,7 @@ export class GameScene extends Phaser.Scene {
     // fill
 
     // equipment related
-    private equipmentText: {[key:number]:  Phaser.GameObjects.Text};
+    private equipmentText: { [key: number]: Phaser.GameObjects.Text };
 
     // objects related
     private graphics: Phaser.GameObjects.Graphics;
@@ -57,6 +58,7 @@ export class GameScene extends Phaser.Scene {
     // score related
     private pieniazki: number;
     private pieniazkiText: Phaser.GameObjects.Text;
+    private atLeastOneItemFixed: boolean;
 
     constructor() {
         super({
@@ -72,7 +74,7 @@ export class GameScene extends Phaser.Scene {
         this.gameDuration = 3 * 60 * 1000; // 2 min
     }
 
-    preload(): void {         
+    preload(): void {
         this.loadRoomAssets();
         this.loadGrassAssets();
         this.load.spritesheet('majster', Majster.image, { frameWidth: 64, frameHeight: 64 });
@@ -113,7 +115,7 @@ export class GameScene extends Phaser.Scene {
         this.wardrobe3Items.push(ItemType.Smar);
         this.wardrobe3Items.push(ItemType.ZardzewialaSrubka);
     }
-    
+
     update(): void {
         this.updateTime();
 
@@ -204,7 +206,7 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.majster.majster, this.entrance, this.onEntranceEvent, null, this);
     }
 
-    private loadGrassAssets(){
+    private loadGrassAssets() {
         this.load.image('grass1', 'images/grass/grass1.png');
         this.load.image('grass2', 'images/grass/grass2.png');
         this.load.image('grass3', 'images/grass/grass3.png');
@@ -219,25 +221,25 @@ export class GameScene extends Phaser.Scene {
         this.load.image('walk3', 'images/grass/walk3.png');
     }
 
-    private drawGrassInitial(){
-        for (var j = 0; j<=880; j+=16){
-            for (var i = 0; i<=880; i+=16){
+    private drawGrassInitial() {
+        for (var j = 0; j <= 880; j += 16) {
+            for (var i = 0; i <= 880; i += 16) {
                 var randNumber = Math.floor(Math.random() * 5) + 1;
-                this.add.image(i, j, "grass"+ randNumber);
+                this.add.image(i, j, "grass" + randNumber);
             }
         }
         this.add.image(75, 22, "tree1");
         this.add.image(15, 150, "tree2");
         this.add.image(92, 350, "tree2");
-        this.add.image(750, 535, "tree2").setDisplaySize(55,55);
+        this.add.image(750, 535, "tree2").setDisplaySize(55, 55);
         this.add.image(40, 430, "water1");
         this.add.image(23, 255, "water2");
         this.add.image(376, 565, "walk1");
-        for (var i=392; i<=648; i+=16){
+        for (var i = 392; i <= 648; i += 16) {
             this.add.image(i, 569, "walk2");
         }
         this.add.image(648, 569, "walk3");
-        
+
     }
 
     private loadRoomAssets() {
@@ -293,115 +295,115 @@ export class GameScene extends Phaser.Scene {
         var rightStopPoint = 856; //16 * x +12
 
         //podłoga
-        for (var j = topStartPoint+53; j<= bottomStopPoint-10; j+=16){
-            for (var i = leftStartPoint+22; i<=rightStopPoint-10; i+=16){
+        for (var j = topStartPoint + 53; j <= bottomStopPoint - 10; j += 16) {
+            for (var i = leftStartPoint + 22; i <= rightStopPoint - 10; i += 16) {
                 var randNumber = Math.floor(Math.random() * 3) + 2;
-                this.add.image(i, j, "floor-"+randNumber);
+                this.add.image(i, j, "floor-" + randNumber);
             }
         }
 
         //środkowy murek
-        for (var i=leftStartPoint + 27; i<=rightStopPoint - 16; i += 16) {
+        for (var i = leftStartPoint + 27; i <= rightStopPoint - 16; i += 16) {
             this.walls.create(i, topStartPoint + 30, "wall-brick-center");
-        }  
-        
+        }
+
         //górna ściana
         for (var i = leftStartPoint + 16; i <= rightStopPoint - 16; i += 16) {
             this.walls.create(i, topStartPoint, "wall-top");
         }
 
         for (var i = leftStartPoint + 22; i <= rightStopPoint - 8; i += 16) {
-            this.walls.create(i, topStartPoint+12, "wall-bottom-small");
+            this.walls.create(i, topStartPoint + 12, "wall-bottom-small");
         }
- 
+
         //lewa ściana
-        for (var i=topStartPoint+8; i<=bottomStopPoint-16; i+=16){
+        for (var i = topStartPoint + 8; i <= bottomStopPoint - 16; i += 16) {
             this.walls.create(leftStartPoint, i, "wall-left");
         }
 
-        for (var i=topStartPoint+22; i<=bottomStopPoint-16; i+=16){
-            this.walls.create(leftStartPoint+11, i, "wall-right-small");
-        }  
+        for (var i = topStartPoint + 22; i <= bottomStopPoint - 16; i += 16) {
+            this.walls.create(leftStartPoint + 11, i, "wall-right-small");
+        }
 
         //prawa ściana
-        for (var i=topStartPoint+16; i<=bottomStopPoint-32; i+=16){
+        for (var i = topStartPoint + 16; i <= bottomStopPoint - 32; i += 16) {
             this.walls.create(rightStopPoint, i, "wall-brick-right-center");
         }
 
-        for (var i=topStartPoint+16; i<=bottomStopPoint-40; i+=16){
-            this.walls.create(rightStopPoint-11, i, "wall-right-small").setAngle(180);
+        for (var i = topStartPoint + 16; i <= bottomStopPoint - 40; i += 16) {
+            this.walls.create(rightStopPoint - 11, i, "wall-right-small").setAngle(180);
         }
 
         //dolna ściana
-        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){
-            if (i <= leftStartPoint+144 || i >= leftStartPoint + 272){
-                this.walls.create(i, bottomStopPoint-24, "wall-top").setAngle(180);
-                this.walls.create(i, bottomStopPoint-36, "wall-bottom-small").setAngle(180);
-            }       
+        for (var i = leftStartPoint + 16; i <= rightStopPoint - 16; i += 16) {
+            if (i <= leftStartPoint + 144 || i >= leftStartPoint + 272) {
+                this.walls.create(i, bottomStopPoint - 24, "wall-top").setAngle(180);
+                this.walls.create(i, bottomStopPoint - 36, "wall-bottom-small").setAngle(180);
+            }
         }
 
         // //narożniki zewnętrzne i wewnętrzne
-        this.walls.create(leftStartPoint+11, topStartPoint+12, "wall-middle-right-corner");
-        this.walls.create(rightStopPoint-11, topStartPoint+12, "wall-middle-left-corner");
-        this.walls.create(leftStartPoint+11, bottomStopPoint-36, "wall-middle-left-corner").setAngle(180);
-        this.walls.create(rightStopPoint-11, bottomStopPoint-36, "wall-middle-right-corner").setAngle(180);
+        this.walls.create(leftStartPoint + 11, topStartPoint + 12, "wall-middle-right-corner");
+        this.walls.create(rightStopPoint - 11, topStartPoint + 12, "wall-middle-left-corner");
+        this.walls.create(leftStartPoint + 11, bottomStopPoint - 36, "wall-middle-left-corner").setAngle(180);
+        this.walls.create(rightStopPoint - 11, bottomStopPoint - 36, "wall-middle-right-corner").setAngle(180);
 
         this.walls.create(leftStartPoint, topStartPoint, "wall-left-top-corner");
         this.walls.create(rightStopPoint, topStartPoint, "wall-right-top-corner");
-        this.walls.create(rightStopPoint, bottomStopPoint-24, "wall-left-top-corner").setAngle(180);
-        this.walls.create(leftStartPoint, bottomStopPoint-24, "wall-right-top-corner").setAngle(180);
+        this.walls.create(rightStopPoint, bottomStopPoint - 24, "wall-left-top-corner").setAngle(180);
+        this.walls.create(leftStartPoint, bottomStopPoint - 24, "wall-right-top-corner").setAngle(180);
 
         //dolny murek
         this.walls.create(leftStartPoint, bottomStopPoint, "wall-brick-left");
         this.walls.create(rightStopPoint, bottomStopPoint, "wall-brick-right");
 
-        for (var i=leftStartPoint+16; i<=rightStopPoint-16; i+=16){      
-            if (i <= leftStartPoint+128 || i >= leftStartPoint + 272){
+        for (var i = leftStartPoint + 16; i <= rightStopPoint - 16; i += 16) {
+            if (i <= leftStartPoint + 128 || i >= leftStartPoint + 272) {
                 this.walls.create(i, bottomStopPoint, "wall-brick-center");
-            } 
+            }
         }
 
         //okna
-        this.add.image(leftStartPoint+64, bottomStopPoint-4, "wall-window1");
+        this.add.image(leftStartPoint + 64, bottomStopPoint - 4, "wall-window1");
 
         //wejście
         var doorStartPointTop = 539; //520
-        var doorStartPointLeft = 300; 
+        var doorStartPointLeft = 300;
         var doorAreaLenght = doorStartPointLeft + 128;
 
         //wejście-podłoga!!!
-        for (var j = 42 ;j<=90; j+=16){
-            for(var i = 16; i<=128; i+=16){
-                this.entrance.create(doorStartPointLeft+i, doorStartPointTop-j, "floor-1");
+        for (var j = 42; j <= 90; j += 16) {
+            for (var i = 16; i <= 128; i += 16) {
+                this.entrance.create(doorStartPointLeft + i, doorStartPointTop - j, "floor-1");
             }
         }
 
         this.walls.create(doorStartPointLeft, doorStartPointTop, "wall-brick-left");
         this.walls.create(doorAreaLenght + 16, doorStartPointTop, "wall-brick-right");
-        for (var i=doorStartPointLeft+16; i<=doorAreaLenght; i+=16 ){
+        for (var i = doorStartPointLeft + 16; i <= doorAreaLenght; i += 16) {
             this.walls.create(i, doorStartPointTop, "wall-brick-center");
         }
 
-        this.walls.create(doorStartPointLeft, doorStartPointTop-24, "wall-right-top-corner").setAngle(180);
-        this.walls.create(doorAreaLenght+16, doorStartPointTop-24, "wall-left-top-corner").setAngle(180);
+        this.walls.create(doorStartPointLeft, doorStartPointTop - 24, "wall-right-top-corner").setAngle(180);
+        this.walls.create(doorAreaLenght + 16, doorStartPointTop - 24, "wall-left-top-corner").setAngle(180);
 
-        for (var i=doorStartPointLeft+16; i<=doorAreaLenght; i+=16){
-            this.walls.create(i, doorStartPointTop-24, "wall-top").setAngle(180);
-            this.walls.create(i, doorStartPointTop-36, "wall-bottom-small").setAngle(180);
+        for (var i = doorStartPointLeft + 16; i <= doorAreaLenght; i += 16) {
+            this.walls.create(i, doorStartPointTop - 24, "wall-top").setAngle(180);
+            this.walls.create(i, doorStartPointTop - 36, "wall-bottom-small").setAngle(180);
         }
 
-        this.add.image(doorStartPointLeft + doorAreaLenght/6, doorStartPointTop-2, "wall-door");
+        this.add.image(doorStartPointLeft + doorAreaLenght / 6, doorStartPointTop - 2, "wall-door");
 
-        for (var i=40; i<=72; i+=16){
-            this.walls.create(doorStartPointLeft, doorStartPointTop-i, "wall-brick-right-center").setAngle(180);
-            this.walls.create(doorStartPointLeft+11, doorStartPointTop-i, "wall-right-small");
+        for (var i = 40; i <= 72; i += 16) {
+            this.walls.create(doorStartPointLeft, doorStartPointTop - i, "wall-brick-right-center").setAngle(180);
+            this.walls.create(doorStartPointLeft + 11, doorStartPointTop - i, "wall-right-small");
 
-            this.walls.create(doorAreaLenght+16, doorStartPointTop-i, "wall-brick-right-center");
-            this.walls.create(doorAreaLenght+5, doorStartPointTop-i, "wall-right-small").setAngle(180);
+            this.walls.create(doorAreaLenght + 16, doorStartPointTop - i, "wall-brick-right-center");
+            this.walls.create(doorAreaLenght + 5, doorStartPointTop - i, "wall-right-small").setAngle(180);
         }
 
-        this.walls.create(doorStartPointLeft+11, doorStartPointTop-88, "wall-right-small");
-        this.walls.create(doorAreaLenght+5, doorStartPointTop-88, "wall-right-small").setAngle(180);
+        this.walls.create(doorStartPointLeft + 11, doorStartPointTop - 88, "wall-right-small");
+        this.walls.create(doorAreaLenght + 5, doorStartPointTop - 88, "wall-right-small").setAngle(180);
     }
 
     private prepareRoomItems() {
@@ -431,12 +433,28 @@ export class GameScene extends Phaser.Scene {
     private updateTime(): void {
         this.gameTime.update(this.gameOverEvent.getProgress());
         this.remainingTimeText.setText(this.gameTime.getTime())
-        
-        let textColor = this.gameOverEvent.getProgress() < 0.5  
-            ? 'green' 
+
+        let textColor = this.gameOverEvent.getProgress() < 0.5
+            ? 'green'
             : this.gameOverEvent.getProgress() < 0.75 ? 'orange' : 'red';
 
         this.remainingTimeText.setColor(textColor);
+    }
+
+    private showHint(hint: HintType, arrowX: number, arrowY: number) {
+        let hintArrow = 'hint_arrow';
+
+        // add a hint arrow above entrance
+        // this.physics.add.sprite(arrowX, arrowY, hintArrow);
+
+        var dialogLength = this.responseDialog.createHint(hint);
+        this.time.addEvent({
+            delay: 50,
+            callback: this.updateResponse,
+            callbackScope: this,
+            repeat: dialogLength,
+            args: [dialogLength]
+        });
     }
 
     onGameOverEvent(): void {
@@ -461,6 +479,8 @@ export class GameScene extends Phaser.Scene {
             return;
         }
 
+        this.clearResponse();
+
         this.majster.acceptRequest(new RepairedItem())
         this.currentGameWindow = GameWindowFocus.Dialog;
         this.nieMaProblemuSaid = false;
@@ -471,7 +491,7 @@ export class GameScene extends Phaser.Scene {
 
     private loadRequest(item: RepairedItemType): void {
         var randNumber = Math.floor(Math.random() * 3) + 1;
-        this.add.image(66, 646, "client"+randNumber).setDisplaySize(90,90);
+        this.add.image(66, 646, "client" + randNumber).setDisplaySize(90, 90);
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.requestDialog.createRequest(item);
         this.time.addEvent({delay: 20, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
@@ -495,12 +515,30 @@ export class GameScene extends Phaser.Scene {
     private loadResponse() {
         this.nieMaProblemuSaid = true;
         let dialogLength = this.responseDialog.createResponse();
-        this.time.addEvent({delay: 20, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+        this.time.addEvent({ delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+
+        this.time.addEvent({ startAt: -2500, callback: this.showInvestigateHint, callbackScope: this, repeat:0 });
+    }
+
+    private showInvestigateHint(){
+        //todo: remove get requesteddialog length from dialog
+        let dialogLength = this.responseDialog.createHint(HintType.ZbadajPrzedmiot);
+        this.time.addEvent({
+            delay: 50,
+            callback: this.updateResponse,
+            callbackScope: this,
+            repeat: dialogLength,
+            args: [dialogLength]
+        });
     }
 
     private updateResponse(): void {
         this.responseDialog.nextLetter();
         this.majsterDialogText.setText(this.responseDialog.text);
+    }
+
+    private clearResponse() {
+        this.majsterDialogText.setText("");
     }
 
     private checkClosestWorkbench(): void {
@@ -509,7 +547,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         let shouldUse = this.shouldUseFurniture(this.workbench);
-        
+
         if (shouldUse) {
             if (this.majster.equipment.length !== 0) {
                 this.currentGameStep = GameStep.ItemHammered;

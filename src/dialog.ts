@@ -1,5 +1,6 @@
 import { RepairedItemType } from "./repairedItemType.enum";
 import { ItemType } from "./ItemType.enum";
+import { HintType } from "./hintTypes.enum";
 
 export class Dialog {
     text: string = "";
@@ -34,6 +35,13 @@ export class Dialog {
     createNeededItemsText(items: ItemType[]): number {
         this.reset();
         this.currentRequest = this.generateNeededItemsDialog(items);
+
+        return this.currentRequest.length;
+    }
+
+    createHint(hint: HintType): number{
+        this.reset();
+        this.currentRequest = hint;
 
         return this.currentRequest.length;
     }
