@@ -83,7 +83,10 @@ export class GameScene extends Phaser.Scene {
     update(): void {
         this.updateTime();
 
-        if (this.currentGameWindow === GameWindowFocus.Items){
+        if (this.currentGameWindow === GameWindowFocus.Items) {
+            if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
+                this.updateEquipment();
+            }
             return;
         }
         else if (this.currentGameWindow === GameWindowFocus.Majster) {
@@ -436,9 +439,13 @@ export class GameScene extends Phaser.Scene {
         let shouldUse = this.shouldUseFurniture(this.workbench);
         
         if (shouldUse) {
-            this.updateEquipment();
-            let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
-            this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+            if (this.majster.equipment.length !== 0) {
+                this.scene.switch('HammeringScene');
+            } else {
+                this.updateEquipment();
+                let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
+                this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+            }
         }
     }
 
@@ -472,10 +479,6 @@ export class GameScene extends Phaser.Scene {
 
     private updateEquipment(): void {
         for (let i = 0; i < 5; i++) {
-            this.equipmentText[i].setText("");
-        }
-
-        for (let i = 0; i < this.majster.maxItemNumber; i++) {
             if (this.majster.equipment.length > i) {
                 this.equipmentText[i].setText(`${i + 1}. ${this.majster.equipment[i]}`);
             } else {

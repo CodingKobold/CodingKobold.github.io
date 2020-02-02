@@ -21,7 +21,7 @@ export class WelcomeScene extends Phaser.Scene {
         this.add.image(675, 575, 'nie-ma-problemu').setDisplaySize(1400,600);
 
         this.input.on('pointerdown', function (/*pointer*/) {
-            this.scene.start("HammeringScene");
+            this.scene.start("GameScene");
         }, this);
     }
 };
