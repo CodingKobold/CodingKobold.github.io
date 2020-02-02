@@ -58,10 +58,13 @@ export class GameScene extends Phaser.Scene {
     private nieMaProblemuSaid: boolean;
     private clientImage: Phaser.GameObjects.Image;
 
+    // hint related
+    private hintArrows: Phaser.Physics.Arcade.Sprite[] = [];
+    private hintsEnabled = true;
+
     // score related
     private pieniazki: number;
     private pieniazkiText: Phaser.GameObjects.Text;
-    private atLeastOneItemFixed: boolean;
 
     constructor() {
         super({
@@ -93,6 +96,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('but', 'images/items/shoe.png');
         this.load.image('lampa', 'images/items/lamp.png');
         this.load.image('balon', 'images/items/baloon.png');
+        this.load.image('arrow', 'images/arrow.png');
     }
 
     create(): void {
@@ -109,6 +113,8 @@ export class GameScene extends Phaser.Scene {
         this.prepareEquipment();
         this.preparePieniazki();
 
+        if (this.hintsEnabled) { this.showHint(HintType.PrzyjmijZlecenie, [[375, 420]]) };
+
         this.wardrobeItems = [];
         this.wardrobeItems.push(ItemType.Kombinerki)
         this.wardrobeItems.push(ItemType.Obcegi)
@@ -118,7 +124,7 @@ export class GameScene extends Phaser.Scene {
         this.wardrobe2Items = []
         this.wardrobe2Items.push(ItemType.Kabel);
         this.wardrobe2Items.push(ItemType.Neonowka);
-        
+
         this.wardrobe3Items = []
         this.wardrobe3Items.push(ItemType.Nit);
         this.wardrobe3Items.push(ItemType.Miara);
@@ -172,7 +178,7 @@ export class GameScene extends Phaser.Scene {
 
     private preparePieniazki(): void {
         this.add.text(915, 160, "Ciężko zarobione pieniądze", { font: '28px Consolas' });
-        this.pieniazkiText = this.add.text(950, 195, `${this.pieniazki} PLN`,  { font: '70px Consolas', fill: 'green', align: 'center', fixedWidth: 330 });
+        this.pieniazkiText = this.add.text(950, 195, `${this.pieniazki} PLN`, { font: '70px Consolas', fill: 'green', align: 'center', fixedWidth: 330 });
     }
 
     private prepareGameShapes() {
@@ -186,12 +192,12 @@ export class GameScene extends Phaser.Scene {
         this.gameTime = new GameTime();
         this.gameOverEvent = this.time.delayedCall(this.gameDuration, this.onGameOverEvent, [], this);
 
-        this.add.text(990, 20,  "Czas do zamknięcia", { font: '28px Consolas' });
-        this.remainingTimeText = this.add.text(975, 55, this.gameTime.getTime(),  { font: '70px Consolas' });
+        this.add.text(990, 20, "Czas do zamknięcia", { font: '28px Consolas' });
+        this.remainingTimeText = this.add.text(975, 55, this.gameTime.getTime(), { font: '70px Consolas' });
     }
 
     private prepareDialogs() {
-        this.add.image(443, 648, 'dialog-box').setDisplaySize(890,144);
+        this.add.image(443, 648, 'dialog-box').setDisplaySize(890, 144);
 
         this.requestDialog = new Dialog();
         this.responseDialog = new Dialog();
@@ -200,7 +206,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     prepareMajster() {
-        this.majster = new Majster(this.physics.add.sprite(32,32,'majster'))
+        this.majster = new Majster(this.physics.add.sprite(32, 32, 'majster'))
         this.majster.setPosition(400, 300);
         this.majster.loadAnimations(this.anims);
     }
@@ -214,6 +220,20 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.majster.majster, this.walls);
         this.physics.add.collider(this.majster.majster, this.workbench);
         this.physics.add.overlap(this.majster.majster, this.entrance, this.onEntranceEvent, null, this);
+    }
+
+    itemTakenFromWardrobe(){
+        if(this.hintsEnabled){ 
+            this.removeHintArrows();
+            this.showHint(HintType.NaprawPrzedmiot, [[350, 70]]); 
+        }
+    }
+
+    gwozdzDriven(){
+        if(this.hintsEnabled){ 
+            this.removeHintArrows();
+            this.showHint(HintType.OddajPrzedmiot, [[375, 420]]); 
+        }
     }
 
     private loadGrassAssets() {
@@ -282,7 +302,7 @@ export class GameScene extends Phaser.Scene {
 
         this.load.image('computer', 'images/furniture/komputer.png');
         this.load.image('plant', 'images/furniture/kwiatek.png');
-        this.load.image('low-table', 'images/furniture/kwiatek.png');
+        this.load.image('low-table', 'images/furniture/niski-stol.png');
         this.load.image('radio', 'images/furniture/radio.png');
 
         this.load.image('table-1', 'images/furniture/stol1.png');
@@ -298,7 +318,12 @@ export class GameScene extends Phaser.Scene {
         this.load.image('c-center', 'images/carpets/center.png');
         this.load.image('c-center2', 'images/carpets/center2.png');
 
+        this.load.image('c-corner-d2', 'images/carpets/corner-d2.png');
+        this.load.image('c-center-d2', 'images/carpets/center-d2.png');
+        this.load.image('c-center2-d2', 'images/carpets/center2-d2.png');
+
         this.load.image('kwiatek', 'images/furniture/kwiatek.png');
+        this.load.image('cat', 'images/cat.png');
     }
 
     private drawRoomInitial() {
@@ -320,7 +345,38 @@ export class GameScene extends Phaser.Scene {
 
         
         //dywany
+        //drugi
+        //dół
+        this.add.image(500, 432, "c-corner-d2").setAngle(-90);
+        this.add.image(660, 432, "c-corner-d2").setAngle(180);
+        for (var i=516; i<=644; i+=16 ){
+            this.add.image(i, 432, "c-center-d2").setAngle(180);
+        }
+        //lewy
+        this.add.image(500, 336, "c-corner-d2");
+        for (var i=416; i>=352; i-=16){
+            this.add.image(500, i, "c-center-d2").setAngle(-90);
+        }
+        //góra
+        this.add.image(660, 336, "c-corner-d2").setAngle(90);
+        for (var i=516; i<=644; i+=16 ){
+            this.add.image(i, 336, "c-center-d2");
+        }
+        //prawy
+        for (var i=416; i>=352; i-=16){
+            this.add.image(660, i, "c-center-d2").setAngle(90);
+        }
+        //środek
+        for (var j=352; j<=416; j+=16){
+            for (var i=516; i<=644; i+=16){
+                this.add.image(i, j, "c-center2-d2");
+            }
+        }
+        this.add.image(580, 375, "cat").setDisplaySize(50,50);
+        
+        
 
+        //pierwszy
         //d-góra
         this.add.image(192, 78, "c-corner");
         this.add.image(448, 78, "c-corner").setAngle(90);
@@ -349,12 +405,6 @@ export class GameScene extends Phaser.Scene {
         }
         
         this.walls.create(230, 150, "kwiatek");
-
-            
-
-        
-        
-        
 
         //środkowy murek
         for (var i = leftStartPoint + 27; i <= rightStopPoint - 16; i += 16) {
@@ -458,12 +508,16 @@ export class GameScene extends Phaser.Scene {
 
         this.walls.create(doorStartPointLeft + 11, doorStartPointTop - 88, "wall-right-small");
         this.walls.create(doorAreaLenght + 5, doorStartPointTop - 88, "wall-right-small").setAngle(180);
+
+        this.walls.create(550, 100, "computer").setScale(1.5,1.5);
+        this.walls.create(300, 415, "kwiatek");
+        this.walls.create(450, 415, "kwiatek");
     }
 
     private prepareRoomItems() {
         this.workbench = this.physics.add.staticSprite(350, 130, 'table-1');
         this.physics.add.collider(this.majster.majster, this.workbench, null, null, this);
-        
+
         // wardrobe 1
         let x = this.physics.add.staticSprite(732, 80, 'wardrobe-1');
         this.physics.add.collider(this.majster.majster, x, null, null, this);
@@ -475,11 +529,11 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.majster.majster, this.wardrobe, null, null, this);
 
         // wardrobe 2
-        this.wardrobe2= this.physics.add.staticSprite(750, 275, 'wardrobe-2');
+        this.wardrobe2 = this.physics.add.staticSprite(750, 275, 'wardrobe-2');
         this.physics.add.collider(this.majster.majster, this.wardrobe2, null, null, this);
 
         // wardrobe 3
-        this.wardrobe3= this.physics.add.staticSprite(250, 300, 'wardrobe-3');
+        this.wardrobe3 = this.physics.add.staticSprite(250, 300, 'wardrobe-3');
         this.physics.add.collider(this.majster.majster, this.wardrobe3, null, null, this);
 
     }
@@ -495,20 +549,36 @@ export class GameScene extends Phaser.Scene {
         this.remainingTimeText.setColor(textColor);
     }
 
-    private showHint(hint: HintType, arrowX: number, arrowY: number) {
-        let hintArrow = 'hint_arrow';
+    private showHint(hint: HintType, arrowPositions: [number, number][]) {
+        let hintArrow = 'arrow';
 
-        // add a hint arrow above entrance
-        // this.physics.add.sprite(arrowX, arrowY, hintArrow);
+        arrowPositions.forEach(pos => {
+            this.hintArrows.push(this.physics.add.sprite(pos[0], pos[1], hintArrow)
+                .setAngle(-90)
+                .setScale(0.3));
+        })
 
-        var dialogLength = this.responseDialog.createHint(hint);
-        this.time.addEvent({
-            delay: 50,
-            callback: this.updateResponse,
-            callbackScope: this,
-            repeat: dialogLength,
-            args: [dialogLength]
-        });
+        if (hint.length > 0) {
+            var dialogLength = this.responseDialog.createHint(hint);
+            this.time.addEvent({
+                delay: 20,
+                callback: this.updateResponse,
+                callbackScope: this,
+                repeat: dialogLength,
+                args: [dialogLength]
+            });
+        }
+    }
+
+    private removeHint() {
+        this.clearResponse();
+        this.removeHintArrows();
+    }
+
+    removeHintArrows() {
+        if (this.hintArrows != null && this.hintArrows.length != 0) {
+            this.hintArrows.forEach((a) => a.destroy());
+        }
     }
 
     onGameOverEvent(): void {
@@ -526,6 +596,10 @@ export class GameScene extends Phaser.Scene {
             this.majster.repairedItem = null;
             this.repairedItemImage.destroy();
             this.currentGameStep = GameStep.Start;
+            if(this.hintsEnabled){
+                this.hintsEnabled = false;
+                this.removeHintArrows();
+            }
         }
     }
 
@@ -534,7 +608,7 @@ export class GameScene extends Phaser.Scene {
             return;
         }
 
-        this.clearResponse();
+        if(this.hintsEnabled){ this.removeHint(); }
 
         let repairedItem = new RepairedItem()
 
@@ -557,7 +631,7 @@ export class GameScene extends Phaser.Scene {
         this.clientImage = this.add.image(66, 646, "client" + randNumber).setDisplaySize(90, 90);
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.requestDialog.createRequest(item);
-        this.time.addEvent({delay: 20, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+        this.time.addEvent({ delay: 20, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
     }
 
     private updateRequest(dialogLength: number): void {
@@ -565,7 +639,7 @@ export class GameScene extends Phaser.Scene {
         this.clientDialogText.setText(this.requestDialog.text);
 
         if (this.clientDialogText.text.length === dialogLength) {
-            this.time.addEvent({delay: 200, callback: this.showTakeAssignmentText, callbackScope: this });
+            this.time.addEvent({ delay: 200, callback: this.showTakeAssignmentText, callbackScope: this });
         }
     }
 
@@ -580,19 +654,20 @@ export class GameScene extends Phaser.Scene {
         let dialogLength = this.responseDialog.createResponse();
         this.time.addEvent({ delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
 
-        this.time.addEvent({ startAt: -2500, callback: this.showInvestigateHint, callbackScope: this, repeat:0 });
         this.repairedItemImage.setPosition(355, 100);
+    
+        if (this.hintsEnabled) {
+            this.showInvestigateHint();
+        }
     }
 
-    private showInvestigateHint(){
-        //todo: remove get requesteddialog length from dialog
-        let dialogLength = this.responseDialog.createHint(HintType.ZbadajPrzedmiot);
+    private showInvestigateHint() {
         this.time.addEvent({
-            delay: 50,
-            callback: this.updateResponse,
+            startAt: -1500,
+            callback: this.showHint,
             callbackScope: this,
-            repeat: dialogLength,
-            args: [dialogLength]
+            repeat: 0,
+            args: [HintType.ZbadajPrzedmiot, [[350, 70]]]
         });
     }
 
@@ -618,11 +693,20 @@ export class GameScene extends Phaser.Scene {
                 this.currentGameWindow = GameWindowFocus.Hammering;
                 this.scene.launch('HammeringScene', { majster: this.majster });
             } else if (this.currentGameStep === GameStep.OrderTaken || this.currentGameStep === GameStep.ItemInvestigated) {
+                if (this.hintsEnabled) {
+                    this.showTakeToolsHint();
+                }
                 this.updateEquipment();
                 let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
-                this.time.addEvent({delay: 20, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+                this.time.addEvent({ delay: 20, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
             }
         }
+    }
+
+    private showTakeToolsHint() {
+        this.removeHintArrows();
+        this.showHint(HintType.ZbierzNarzedzia, 
+            [[247,228],[780,17],[750, 203]]);
     }
 
     private checkClosestWardrobe(): void {
@@ -643,7 +727,7 @@ export class GameScene extends Phaser.Scene {
             this.majster.stop();
             this.takeTools(this.wardrobe2Items);
         }
-        
+
         let shouldUseWardrobe3 = this.shouldUseFurniture(this.wardrobe3);
 
         if (shouldUseWardrobe3) {
@@ -653,8 +737,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     private shouldUseFurniture(sprite: Phaser.Physics.Arcade.Sprite): boolean {
-        let distanceToObject = Phaser.Math.Distance.Between(this.majster.majster.x, this.majster.majster.y, sprite.x, sprite.y);            
-        
+        let distanceToObject = Phaser.Math.Distance.Between(this.majster.majster.x, this.majster.majster.y, sprite.x, sprite.y);
+
         if (distanceToObject < 100.0) {
             return true;
         }
@@ -686,7 +770,7 @@ export class GameScene extends Phaser.Scene {
 
         this.pieniazki += value;
 
-        if (this.pieniazki < 0){
+        if (this.pieniazki < 0) {
             this.pieniazkiText.setColor("red");
         } else {
             this.pieniazkiText.setColor("green");
