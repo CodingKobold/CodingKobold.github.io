@@ -40,11 +40,14 @@ export class ItemSelectionScene extends Phaser.Scene {
     preload(): void {         
         this.load.image('szafa', 'images/szafa.png');
         this.load.image('bag', 'images/bag.png');
+        this.load.image('arrow', 'images/arrow.png');
     }
     
     create(): void {
         this.add.image(250, 265, "szafa").setDisplaySize(260,345);
         this.add.image(610, 254, "bag").setDisplaySize(260,467);
+        this.add.image(420, 240, "arrow").setDisplaySize(50,50);
+        this.add.image(445, 265, "arrow").setDisplaySize(50,50).setAngle(180);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.esc = this.input.keyboard.addKey('Esc'); 
