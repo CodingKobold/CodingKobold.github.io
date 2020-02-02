@@ -60,6 +60,7 @@ export class ItemSelectionScene extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.esc = this.input.keyboard.addKey('Esc'); 
+        this.index = 0;
 
         this.add.text(150, 476, "[ESC] Wyjście",
         {
