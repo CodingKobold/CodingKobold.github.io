@@ -10,7 +10,7 @@ export class Dialog {
         "Sowicie Cię wynagrodzę za naprawę [...].",
         "[...]!!!",
         "Proszę, błagam o naprawę [...]...",
-        "Karol to grubas. Naprawisz mi [...]?"
+        "Naprawisz mi [...]?"
     ];
 
     private majsterResponse: string = "Nie ma problemu.";
