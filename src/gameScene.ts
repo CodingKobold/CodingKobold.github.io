@@ -323,6 +323,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('c-center2-d2', 'images/carpets/center2-d2.png');
 
         this.load.image('kwiatek', 'images/furniture/kwiatek.png');
+        this.load.image('cat', 'images/cat.png');
     }
 
     private drawRoomInitial() {
@@ -366,8 +367,13 @@ export class GameScene extends Phaser.Scene {
             this.add.image(660, i, "c-center-d2").setAngle(90);
         }
         //środek
+        for (var j=352; j<=416; j+=16){
+            for (var i=516; i<=644; i+=16){
+                this.add.image(i, j, "c-center2-d2");
+            }
+        }
+        this.add.image(580, 375, "cat").setDisplaySize(50,50);
         
-        this.add.image(516, 352, "c-center2-d2");
         
 
         //pierwszy
