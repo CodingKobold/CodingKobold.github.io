@@ -295,7 +295,7 @@ export class GameScene extends Phaser.Scene {
 
         this.load.image('computer', 'images/furniture/komputer.png');
         this.load.image('plant', 'images/furniture/kwiatek.png');
-        this.load.image('low-table', 'images/furniture/kwiatek.png');
+        this.load.image('low-table', 'images/furniture/niski-stol.png');
         this.load.image('radio', 'images/furniture/radio.png');
 
         this.load.image('table-1', 'images/furniture/stol1.png');
@@ -495,6 +495,10 @@ export class GameScene extends Phaser.Scene {
 
         this.walls.create(doorStartPointLeft + 11, doorStartPointTop - 88, "wall-right-small");
         this.walls.create(doorAreaLenght + 5, doorStartPointTop - 88, "wall-right-small").setAngle(180);
+
+        this.walls.create(550, 100, "computer").setScale(1.5,1.5);
+        this.walls.create(300, 415, "kwiatek");
+        this.walls.create(450, 415, "kwiatek");
     }
 
     private prepareRoomItems() {
