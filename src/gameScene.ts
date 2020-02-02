@@ -338,9 +338,30 @@ export class GameScene extends Phaser.Scene {
         
         //dywany
         //drugi
+        //dół
         this.add.image(500, 432, "c-corner-d2").setAngle(-90);
+        this.add.image(660, 432, "c-corner-d2").setAngle(180);
+        for (var i=516; i<=644; i+=16 ){
+            this.add.image(i, 432, "c-center-d2").setAngle(180);
+        }
+        //lewy
+        this.add.image(500, 336, "c-corner-d2");
+        for (var i=416; i>=352; i-=16){
+            this.add.image(500, i, "c-center-d2").setAngle(-90);
+        }
+        //góra
+        this.add.image(660, 336, "c-corner-d2").setAngle(90);
+        for (var i=516; i<=644; i+=16 ){
+            this.add.image(i, 336, "c-center-d2");
+        }
+        //prawy
+        for (var i=416; i>=352; i-=16){
+            this.add.image(660, i, "c-center-d2").setAngle(90);
+        }
+        //środek
         
-        this.add.image(516, 432, "c-center-d2").setAngle(180);
+        this.add.image(516, 352, "c-center2-d2");
+        
 
         //pierwszy
         //d-góra
