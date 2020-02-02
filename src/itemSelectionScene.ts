@@ -12,7 +12,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     private wordrobeTexts: Phaser.GameObjects.Text[];
     private majsterToolsTexts: Phaser.GameObjects.Text[];
 
-
+    private availableTools: ItemType[];
 
     baseStyle: any = {
         font: '20px Consolas',
@@ -35,6 +35,7 @@ export class ItemSelectionScene extends Phaser.Scene {
 
     init(params: any): void {
         this.majster = params.majster;
+        this.availableTools = params.availableTools;
     }
 
     preload(): void {         
@@ -67,7 +68,7 @@ export class ItemSelectionScene extends Phaser.Scene {
         });
 
         this.wordrobeToolActive=true;
-        this.wordrobeTools = Object.values(ItemType).filter(x => !this.majster.equipment.includes(x));
+        this.wordrobeTools = this.availableTools.filter(x => !this.majster.equipment.includes(x));
         this.wordrobeTexts = [];
         this.majsterToolsTexts = [];
 
@@ -128,13 +129,15 @@ export class ItemSelectionScene extends Phaser.Scene {
     removeTool() {
         var item = this.majster.equipment[this.index];
 
-        this.wordrobeTools.push(item);
-        this.majster.equipment = this.majster.equipment.filter(x => x != item);
+        if (this.availableTools.includes(item)){
+            this.wordrobeTools.push(item);
+            this.majster.equipment = this.majster.equipment.filter(x => x != item);
+                
+            this.index = this.index >= this.majster.equipment.length ? this.wordrobeTools.length-1 : 0;
             
-        this.index = this.index >= this.majster.equipment.length ? this.wordrobeTools.length-1 : 0;
-        
-        if (this.majster.equipment.length === 0){
-            this.wordrobeToolActive=true;
+            if (this.majster.equipment.length === 0){
+                this.wordrobeToolActive=true;
+            }
         }
     }
 
@@ -164,7 +167,11 @@ export class ItemSelectionScene extends Phaser.Scene {
     }
 
     private moveSelectionDown() {
-        if (this.index < this.wordrobeTools.length - 1) {
+        if (this.wordrobeToolActive && this.index < this.wordrobeTools.length - 1) {
+            this.index += 1;
+        }
+
+        if (!this.wordrobeToolActive && this.index < this.majster.equipment.length - 1) {
             this.index += 1;
         }
     }

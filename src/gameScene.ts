@@ -7,6 +7,7 @@ import { GameWindowFocus } from "./gameWindowFocus.enum";
 import { RepairedItem } from './repairedItem';
 import { RepairedItemType } from './repairedItemType.enum';
 import { GameStep } from "./gameStep.enum";
+import { ItemType } from './ItemType.enum';
 
 export class GameScene extends Phaser.Scene {
     // game related
@@ -34,6 +35,11 @@ export class GameScene extends Phaser.Scene {
     private entrance: Phaser.Physics.Arcade.StaticGroup;
     private workbench: Phaser.Physics.Arcade.Sprite;
     private wardrobe: Phaser.Physics.Arcade.Sprite;
+    private wardrobe2: Phaser.Physics.Arcade.Sprite;
+    private wardrobe3: Phaser.Physics.Arcade.Sprite;
+    private wardrobeItems: ItemType[];
+    private wardrobe2Items: ItemType[];
+    private wardrobe3Items: ItemType[];
 
     // time related
     private remainingTimeText: Phaser.GameObjects.Text;
@@ -90,6 +96,22 @@ export class GameScene extends Phaser.Scene {
         this.prepareTime();
         this.prepareEquipment();
         this.preparePieniazki();
+
+        this.wardrobeItems = [];
+        this.wardrobeItems.push(ItemType.Kombinerki)
+        this.wardrobeItems.push(ItemType.Obcegi)
+        this.wardrobeItems.push(ItemType.Srubokret)
+        this.wardrobeItems.push(ItemType.Mlotek)
+
+        this.wardrobe2Items = []
+        this.wardrobe2Items.push(ItemType.Kabel);
+        this.wardrobe2Items.push(ItemType.Neonowka);
+        
+        this.wardrobe3Items = []
+        this.wardrobe3Items.push(ItemType.Nit);
+        this.wardrobe3Items.push(ItemType.Miara);
+        this.wardrobe3Items.push(ItemType.Smar);
+        this.wardrobe3Items.push(ItemType.ZardzewialaSrubka);
     }
     
     update(): void {
@@ -167,7 +189,7 @@ export class GameScene extends Phaser.Scene {
 
     prepareMajster() {
         this.majster = new Majster(this.physics.add.sprite(32,32,'majster'))
-        this.majster.setPosition(250, 100);
+        this.majster.setPosition(400, 300);
         this.majster.loadAnimations(this.anims);
     }
 
@@ -383,10 +405,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     private prepareRoomItems() {
-        this.workbench = this.physics.add.staticSprite(300, 200, 'table-1');
+        this.workbench = this.physics.add.staticSprite(350, 130, 'table-1');
         this.physics.add.collider(this.majster.majster, this.workbench, null, null, this);
-
-
+        
+        // wardrobe 1
         let x = this.physics.add.staticSprite(732, 80, 'wardrobe-1');
         this.physics.add.collider(this.majster.majster, x, null, null, this);
 
@@ -395,6 +417,15 @@ export class GameScene extends Phaser.Scene {
 
         this.wardrobe = this.physics.add.staticSprite(774, 80, 'wardrobe-1');
         this.physics.add.collider(this.majster.majster, this.wardrobe, null, null, this);
+
+        // wardrobe 2
+        this.wardrobe2= this.physics.add.staticSprite(750, 275, 'wardrobe-2');
+        this.physics.add.collider(this.majster.majster, this.wardrobe2, null, null, this);
+
+        // wardrobe 3
+        this.wardrobe3= this.physics.add.staticSprite(250, 300, 'wardrobe-3');
+        this.physics.add.collider(this.majster.majster, this.wardrobe3, null, null, this);
+
     }
 
     private updateTime(): void {
@@ -497,11 +528,25 @@ export class GameScene extends Phaser.Scene {
             return;
         }
 
-        let shouldUse = this.shouldUseFurniture(this.wardrobe);
+        let shouldUseWardrobe = this.shouldUseFurniture(this.wardrobe);
 
-        if (shouldUse) {
+        if (shouldUseWardrobe) {
             this.majster.stop();
-            this.takeTools();
+            this.takeTools(this.wardrobeItems);
+        }
+
+        let shouldUseWardrobe2 = this.shouldUseFurniture(this.wardrobe2);
+
+        if (shouldUseWardrobe2) {
+            this.majster.stop();
+            this.takeTools(this.wardrobe2Items);
+        }
+        
+        let shouldUseWardrobe3 = this.shouldUseFurniture(this.wardrobe3);
+
+        if (shouldUseWardrobe3) {
+            this.majster.stop();
+            this.takeTools(this.wardrobe3Items);
         }
     }
 
@@ -515,8 +560,8 @@ export class GameScene extends Phaser.Scene {
         return false;
     }
 
-    private takeTools(): void {
-        this.scene.launch('ItemSelectionScene', { majster: this.majster });
+    private takeTools(availableItems: ItemType[]): void {
+        this.scene.launch('ItemSelectionScene', { majster: this.majster, availableTools: availableItems });
         this.currentGameWindow = GameWindowFocus.Items;
     }
 
