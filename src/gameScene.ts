@@ -63,7 +63,7 @@ export class GameScene extends Phaser.Scene {
         this.graphics = this.add.graphics();
         this.currentGameWindow = GameWindowFocus.Majster;
         this.pieniazki = 0;
-        this.gameDuration = 1 * 30 * 1000; // 2 min
+        this.gameDuration = 3 * 60 * 1000; // 2 min
     }
 
     preload(): void {         
