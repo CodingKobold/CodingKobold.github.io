@@ -18,7 +18,7 @@ export class ScoreScene extends Phaser.Scene {
 
   preload(){
       this.load.image('brigade-logo', 'images/brigade-logo.png');
-      this.load.image('fajrant', 'images/fajrant.png');
+      this.load.image('fajrant', 'images/Fajrant.png');
   }
 
   create(): void {
