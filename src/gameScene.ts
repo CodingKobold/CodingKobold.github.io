@@ -370,12 +370,6 @@ export class GameScene extends Phaser.Scene {
         
         this.walls.create(230, 150, "kwiatek");
 
-            
-
-        
-        
-        
-
         //środkowy murek
         for (var i = leftStartPoint + 27; i <= rightStopPoint - 16; i += 16) {
             this.walls.create(i, topStartPoint + 30, "wall-brick-center");
@@ -618,7 +612,7 @@ export class GameScene extends Phaser.Scene {
 
         this.time.addEvent({ startAt: -2500, callback: this.showInvestigateHint, callbackScope: this, repeat:0 });
         this.repairedItemImage.setPosition(355, 100);
-    }
+    
         if (this.hintsEnabled) {
             this.showInvestigateHint();
         }

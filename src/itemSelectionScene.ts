@@ -25,6 +25,12 @@ export class ItemSelectionScene extends Phaser.Scene {
         fill: '#cc0000'
     };
 
+    baseMajsterStyle: any = {
+        font: this.baseStyle.font,
+        align: this.baseStyle.align,
+        fill: 'black'
+    };
+
     private majster: Majster;
 
     constructor() {
@@ -199,7 +205,7 @@ export class ItemSelectionScene extends Phaser.Scene {
         this.majster.equipment.forEach((item, i) => {
             let isSelected = (i == this.index && !this.wordrobeToolActive);
             this.majsterToolsTexts[i].setText(item)
-            this.majsterToolsTexts[i].setStyle( isSelected ? this.selectedStyle : this.baseStyle);
+            this.majsterToolsTexts[i].setStyle( isSelected ? this.selectedStyle : this.baseMajsterStyle);
         });
     }
 
@@ -223,7 +229,7 @@ export class ItemSelectionScene extends Phaser.Scene {
 
         Object.keys(ItemType).forEach((item, i) => {
             let isSelected = (i == this.index && !this.wordrobeToolActive);
-            this.majsterToolsTexts.push(this.add.text(startX, startY + i*stepY, "", isSelected  ? this.selectedStyle : this.baseStyle));
+            this.majsterToolsTexts.push(this.add.text(startX, startY + i*stepY, "", isSelected  ? this.selectedStyle : this.baseMajsterStyle));
         });
 
         this.updateMajsterItems();
