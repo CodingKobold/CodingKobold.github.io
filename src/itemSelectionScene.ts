@@ -47,7 +47,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     
     create(): void {
         this.add.image(250, 265, "szafa").setDisplaySize(260,345);
-        this.add.image(610, 254, "bag").setDisplaySize(260,467);
+        this.add.image(610, 254, "bag").setDisplaySize(260,300);
         this.add.image(420, 240, "arrow").setDisplaySize(50,50);
         this.add.image(445, 265, "arrow").setDisplaySize(50,50).setAngle(180);
         this.add.image(250, 490, "dialog-box").setDisplaySize(260,50);
@@ -217,9 +217,9 @@ export class ItemSelectionScene extends Phaser.Scene {
     }
 
     private prepareMajsterItems() {
-        const startX = 500;
-        const startY = 100;
-        let stepY = 35;
+        const startX = 510;
+        const startY = 182;
+        let stepY = 36;
 
         Object.keys(ItemType).forEach((item, i) => {
             let isSelected = (i == this.index && !this.wordrobeToolActive);
