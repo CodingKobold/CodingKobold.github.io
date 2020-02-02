@@ -6,9 +6,12 @@ import { GameTime } from './gameTime';
 import { GameWindowFocus } from "./gameWindowFocus.enum";
 import { RepairedItem } from './repairedItem';
 import { RepairedItemType } from './repairedItemType.enum';
-import { ItemType } from './ItemType.enum';
+import { GameStep } from "./gameStep.enum";
 
 export class GameScene extends Phaser.Scene {
+    // game related
+    private currentGameStep: GameStep;
+    
     // scene related
     private currentGameWindow: GameWindowFocus;
 
@@ -56,10 +59,11 @@ export class GameScene extends Phaser.Scene {
     }
 
     init(): void {
+        this.currentGameStep = GameStep.Start;
         this.graphics = this.add.graphics();
         this.currentGameWindow = GameWindowFocus.Majster;
         this.pieniazki = 0;
-        this.gameDuration = 4 * 60 * 1000; // 2 min
+        this.gameDuration = 1 * 30 * 1000; // 2 min
     }
 
     preload(): void {         
@@ -97,6 +101,9 @@ export class GameScene extends Phaser.Scene {
             }
             return;
         }
+        if (this.currentGameWindow === GameWindowFocus.Hammering) {
+            return;
+        }
         else if (this.currentGameWindow === GameWindowFocus.Majster) {
             this.majster.move(this.cursors);
         }
@@ -104,6 +111,7 @@ export class GameScene extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustUp(this.actionKey)) {
                 this.loadResponse();
                 this.currentGameWindow = GameWindowFocus.Majster;
+                this.currentGameStep = GameStep.OrderTaken;
             }
         }
 
@@ -171,7 +179,7 @@ export class GameScene extends Phaser.Scene {
     preparePhysics(): void {
         this.physics.add.collider(this.majster.majster, this.walls);
         this.physics.add.collider(this.majster.majster, this.workbench);
-        this.physics.add.overlap(this.majster.majster, this.entrance, this.takeOrder, null, this);
+        this.physics.add.overlap(this.majster.majster, this.entrance, this.onEntranceEvent, null, this);
     }
 
     private loadGrassAssets(){
@@ -394,7 +402,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     onGameOverEvent(): void {
+        this.scene.stop('ItemSelectionScene')
+        this.scene.stop('HammeringScene')
         this.scene.start('ScoreScene', { score: this.pieniazki });
+    }
+
+    private onEntranceEvent(): void {
+        // TODO
+        this.takeOrder();
     }
 
     private takeOrder(): void {
@@ -453,8 +468,10 @@ export class GameScene extends Phaser.Scene {
         
         if (shouldUse) {
             if (this.majster.equipment.length !== 0) {
-                this.scene.switch('HammeringScene');
-            } else {
+                this.currentGameStep = GameStep.ItemHammered;
+                this.currentGameWindow = GameWindowFocus.Hammering;
+                this.scene.launch('HammeringScene', { majster: this.majster });
+            } else if (this.currentGameStep === GameStep.OrderTaken || this.currentGameStep === GameStep.ItemInvestigated) {
                 this.updateEquipment();
                 let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
                 this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });

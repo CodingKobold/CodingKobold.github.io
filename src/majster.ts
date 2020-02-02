@@ -5,16 +5,15 @@ export class Majster {
 	majster: Phaser.Physics.Arcade.Sprite;
 	repairedItem: RepairedItem = null;
 	equipment: ItemType[] = [];
-	maxItemNumber: number;
+	maxItemNumber: number = 5;
 
 	static image: string = 'images/majster.png';
 
-	private velocity: integer = 200;
+	private velocity: integer = 400;
 
 	constructor(sprite: Phaser.Physics.Arcade.Sprite) {
 		this.majster = sprite;
 		this.majster.setCollideWorldBounds(true);
-		this.maxItemNumber = 0;
 	}
 
 	move(cursor: Phaser.Types.Input.Keyboard.CursorKeys): void {
@@ -47,7 +46,6 @@ export class Majster {
 
 	acceptRequest(repairedItem: RepairedItem): void{
 		this.repairedItem = repairedItem;
-		this.maxItemNumber = repairedItem.neededItems.length;
 	}
 
     setPosition(x: number, y: number): void{
@@ -82,5 +80,9 @@ export class Majster {
 			frames: manager.generateFrameNumbers('majster', { start: 9, end: 11 }),
 			frameRate: 10,
 			repeat: -1});
+	}
+
+	clearEquipment(): void {
+		this.equipment = [];
 	}
 }
