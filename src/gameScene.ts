@@ -395,7 +395,7 @@ export class GameScene extends Phaser.Scene {
 
     onGameOverEvent(): void {
         this.scene.stop('ItemSelectionScene')
-        this.scene.stop('HammerScene')
+        this.scene.stop('HammeringScene')
         this.scene.start('ScoreScene', { score: this.pieniazki });
     }
 
