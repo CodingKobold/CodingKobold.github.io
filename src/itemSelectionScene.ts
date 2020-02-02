@@ -36,16 +36,24 @@ export class ItemSelectionScene extends Phaser.Scene {
     init(params: any): void {
         this.majster = params.majster;
     }
+
+    preload(): void {         
+        this.load.image('szafa', 'images/szafa.png');
+        this.load.image('bag', 'images/bag.png');
+    }
     
     create(): void {
+        this.add.image(250, 265, "szafa").setDisplaySize(260,345);
+        this.add.image(610, 254, "bag").setDisplaySize(260,467);
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.esc = this.input.keyboard.addKey('Esc'); 
 
-        this.add.text(150, 50, "Co wybierasz?",
-        {
-            font: '32px Consolas',
-            fill: '#FBFBAC'
-        });
+        // this.add.text(150, 50, "Co wybierasz?",
+        // {
+        //     font: '32px Consolas',
+        //     fill: '#FBFBAC'
+        // });
 
         this.add.text(150, 450, "Naciśnij Esc żeby wyjść",
         {
@@ -186,7 +194,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     private prepareWordrobeItems() {
         const startX = 150;
         const startY = 100;
-        let stepY = 30;
+        let stepY = 35;
 
         Object.keys(ItemType).forEach((item, i) => {
             let isSelected = (i == this.index && this.wordrobeToolActive);
@@ -199,7 +207,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     private prepareMajsterItems() {
         const startX = 500;
         const startY = 100;
-        let stepY = 30;
+        let stepY = 35;
 
         Object.keys(ItemType).forEach((item, i) => {
             let isSelected = (i == this.index && !this.wordrobeToolActive);
