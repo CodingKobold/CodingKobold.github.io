@@ -22,7 +22,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     selectedStyle: any = {
         font: this.baseStyle.font,
         align: this.baseStyle.align,
-        fill: '#FBFBAC'
+        fill: '#cc0000'
     };
 
     private majster: Majster;
@@ -41,6 +41,7 @@ export class ItemSelectionScene extends Phaser.Scene {
         this.load.image('szafa', 'images/szafa.png');
         this.load.image('bag', 'images/bag.png');
         this.load.image('arrow', 'images/arrow.png');
+        this.load.image('dialog-box', 'images/dialog-box.png');
     }
     
     create(): void {
@@ -48,6 +49,7 @@ export class ItemSelectionScene extends Phaser.Scene {
         this.add.image(610, 254, "bag").setDisplaySize(260,467);
         this.add.image(420, 240, "arrow").setDisplaySize(50,50);
         this.add.image(445, 265, "arrow").setDisplaySize(50,50).setAngle(180);
+        this.add.image(250, 490, "dialog-box").setDisplaySize(260,50);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.esc = this.input.keyboard.addKey('Esc'); 
@@ -58,10 +60,10 @@ export class ItemSelectionScene extends Phaser.Scene {
         //     fill: '#FBFBAC'
         // });
 
-        this.add.text(150, 450, "Naciśnij Esc żeby wyjść",
+        this.add.text(150, 476, "[ESC] Wyjście",
         {
-            font: '32px Consolas',
-            fill: '#FBFBAC'
+            font: '24px Consolas',
+            fill: '#000000'
         });
 
         this.wordrobeToolActive=true;
@@ -74,7 +76,7 @@ export class ItemSelectionScene extends Phaser.Scene {
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(this.cursors.left) && !!this.wordrobeToolActive && this.wordrobeTools.length!==0)
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.left) && !this.wordrobeToolActive && this.wordrobeTools.length!==0)
         {
            this.wordrobeToolActive=true;
            this.index = 0;
