@@ -229,6 +229,13 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    gwozdzDriven(){
+        if(this.hintsEnabled){ 
+            this.removeHintArrows();
+            this.showHint(HintType.OddajPrzedmiot, [[375, 420]]); 
+        }
+    }
+
     private loadGrassAssets() {
         this.load.image('grass1', 'images/grass/grass1.png');
         this.load.image('grass2', 'images/grass/grass2.png');
@@ -583,6 +590,10 @@ export class GameScene extends Phaser.Scene {
             this.majster.repairedItem = null;
             this.repairedItemImage.destroy();
             this.currentGameStep = GameStep.Start;
+            if(this.hintsEnabled){
+                this.hintsEnabled = false;
+                this.removeHintArrows();
+            }
         }
     }
 
@@ -591,7 +602,7 @@ export class GameScene extends Phaser.Scene {
             return;
         }
 
-        this.removeHint();
+        if(this.hintsEnabled){ this.removeHint(); }
 
         let repairedItem = new RepairedItem()
 
@@ -637,7 +648,6 @@ export class GameScene extends Phaser.Scene {
         let dialogLength = this.responseDialog.createResponse();
         this.time.addEvent({ delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
 
-        this.time.addEvent({ startAt: -2500, callback: this.showInvestigateHint, callbackScope: this, repeat:0 });
         this.repairedItemImage.setPosition(355, 100);
     
         if (this.hintsEnabled) {

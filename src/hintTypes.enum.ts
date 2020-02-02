@@ -3,4 +3,5 @@ export enum HintType{
     ZbadajPrzedmiot = "Teraz muszę sprawdzić co będzie potrzebne mi do naprawy",
     ZbierzNarzedzia = "",
     NaprawPrzedmiot = "",
+    OddajPrzedmiot = ""
 }

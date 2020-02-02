@@ -236,6 +236,7 @@ export class HammeringScene extends Phaser.Scene {
         this.majster.clearEquipment();
         gameScene.currentGameWindow = GameWindowFocus.Majster;
         gameScene.currentGameStep = GameStep.OrderReady;
+        gameScene.gwozdzDriven();
         gameScene.updateEquipment();
         this.scene.stop();
     }
