@@ -298,6 +298,10 @@ export class GameScene extends Phaser.Scene {
         this.load.image('c-center', 'images/carpets/center.png');
         this.load.image('c-center2', 'images/carpets/center2.png');
 
+        this.load.image('c-corner-d2', 'images/carpets/corner-d2.png');
+        this.load.image('c-center-d2', 'images/carpets/center-d2.png');
+        this.load.image('c-center2-d2', 'images/carpets/center2-d2.png');
+
         this.load.image('kwiatek', 'images/furniture/kwiatek.png');
     }
 
