@@ -81,6 +81,8 @@ export class HammeringScene extends Phaser.Scene {
 
         let delay = Math.random() * 1500 + 500;
         this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this, repeat: 0 });
+
+        console.log("kek");
     }
 
     update() {

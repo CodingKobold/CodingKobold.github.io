@@ -153,7 +153,7 @@ export class GameScene extends Phaser.Scene {
         this.equipmentText = {};
 
         Array.from(Array(5).keys()).forEach(x => {
-            this.equipmentText[x] = this.add.text(900, y, ""), { font: '28px Consolas' };
+            this.equipmentText[x] = this.add.text(1030, y, ""), { font: '28px Consolas', align: 'center', fixedWidth: 300 };
             y += ySpacing;
         })
 
@@ -162,7 +162,7 @@ export class GameScene extends Phaser.Scene {
 
     private preparePieniazki(): void {
         this.add.text(915, 160, "Ciężko zarobione pieniądze", { font: '28px Consolas' });
-        this.pieniazkiText = this.add.text(1025, 195, `${this.pieniazki} PLN`,  { font: '70px Consolas', fill: 'green' });
+        this.pieniazkiText = this.add.text(950, 195, `${this.pieniazki} PLN`,  { font: '70px Consolas', fill: 'green', align: 'center', fixedWidth: 330 });
     }
 
     private prepareGameShapes() {
@@ -608,7 +608,7 @@ export class GameScene extends Phaser.Scene {
             if (this.majster.equipment.length > i) {
                 this.equipmentText[i].setText(`${i + 1}. ${this.majster.equipment[i]}`);
             } else {
-                this.equipmentText[i].setText(`${i + 1}. ......................`);
+                this.equipmentText[i].setText(`${i + 1}. ................`);
             }
         }
     }
@@ -627,6 +627,6 @@ export class GameScene extends Phaser.Scene {
         } else {
             this.pieniazkiText.setColor("green");
         }
-        this.pieniazkiText.setText(`${this.pieniazki} złotych`);
+        this.pieniazkiText.setText(`${this.pieniazki} PLN`);
     }
 };
