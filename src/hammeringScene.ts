@@ -124,7 +124,7 @@ export class HammeringScene extends Phaser.Scene {
         if (this.gwozdzPresenceBitMapHandles[position][bit] == 1) {
             this.gwozdzPresenceBitMapHandles[position][bit] = 0;
             this.drivenGwozdzie += 1;
-            let delay = Math.random() * 1900 + 100;
+            let delay = Math.random() * 400 + 600;
             this.time.addEvent({ delay: delay, callback: this.makeGwozdziesRespawnIfNeeded, callbackScope: this, repeat: 0 });
         }
         this.smash();

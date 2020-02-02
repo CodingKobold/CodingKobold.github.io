@@ -56,6 +56,7 @@ export class GameScene extends Phaser.Scene {
     private clientDialogText: Phaser.GameObjects.Text;
     private majsterDialogText: Phaser.GameObjects.Text;
     private nieMaProblemuSaid: boolean;
+    private clientImage: Phaser.GameObjects.Image;
 
     // score related
     private pieniazki: number;
@@ -74,6 +75,7 @@ export class GameScene extends Phaser.Scene {
         this.currentGameWindow = GameWindowFocus.Majster;
         this.pieniazki = 0;
         this.gameDuration = 3 * 60 * 1000; // 2 min
+        this.clientImage = null;
     }
 
     preload(): void {
@@ -544,7 +546,12 @@ export class GameScene extends Phaser.Scene {
 
     private loadRequest(item: RepairedItemType): void {
         var randNumber = Math.floor(Math.random() * 3) + 1;
-        this.add.image(66, 646, "client" + randNumber).setDisplaySize(90, 90);
+
+        if (this.clientImage !== null) {
+            this.clientImage.destroy();
+        }
+        
+        this.clientImage = this.add.image(66, 646, "client" + randNumber).setDisplaySize(90, 90);
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.requestDialog.createRequest(item);
         this.time.addEvent({delay: 20, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
