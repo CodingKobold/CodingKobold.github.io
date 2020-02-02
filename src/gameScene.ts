@@ -75,7 +75,7 @@ export class GameScene extends Phaser.Scene {
     preload(): void {         
         this.loadRoomAssets();
         this.loadGrassAssets();
-        this.load.spritesheet('majster', Majster.image, { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('majster', Majster.image, { frameWidth: 64, frameHeight: 64 });
         this.load.image('dialog-box', 'images/dialog-box.png');
         this.load.image('client1', 'images/clients/client1.png');
         this.load.image('client2', 'images/clients/client2.png');
