@@ -4,6 +4,7 @@ import { ItemType } from './ItemType.enum';
 export class RepairedItem {
     repairedItemType: RepairedItemType;
     neededItems: ItemType[] = [];
+    isDestroyed: boolean;
 
     constructor() {
         const repairedItemIndex = this.generateRandom(0, Object.keys(RepairedItemType).length);

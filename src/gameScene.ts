@@ -415,8 +415,14 @@ export class GameScene extends Phaser.Scene {
     }
 
     private onEntranceEvent(): void {
-        // TODO
-        this.takeOrder();
+        if (this.currentGameStep === GameStep.Start) {
+            this.takeOrder();
+        }
+        if (this.currentGameStep === GameStep.OrderReady) {
+            this.updatePieniazki();
+            this.majster.repairedItem = null;
+            this.currentGameStep = GameStep.Start;
+        }
     }
 
     private takeOrder(): void {
@@ -437,7 +443,7 @@ export class GameScene extends Phaser.Scene {
         this.add.image(66, 646, "client"+randNumber).setDisplaySize(90,90);
         this.currentGameWindow = GameWindowFocus.Dialog;
         let dialogLength = this.requestDialog.createRequest(item);
-        this.time.addEvent({delay: 50, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+        this.time.addEvent({delay: 20, callback: this.updateRequest, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
     }
 
     private updateRequest(dialogLength: number): void {
@@ -445,7 +451,7 @@ export class GameScene extends Phaser.Scene {
         this.clientDialogText.setText(this.requestDialog.text);
 
         if (this.clientDialogText.text.length === dialogLength) {
-            this.time.addEvent({delay: 300, callback: this.showTakeAssignmentText, callbackScope: this });
+            this.time.addEvent({delay: 200, callback: this.showTakeAssignmentText, callbackScope: this });
         }
     }
 
@@ -458,7 +464,7 @@ export class GameScene extends Phaser.Scene {
     private loadResponse() {
         this.nieMaProblemuSaid = true;
         let dialogLength = this.responseDialog.createResponse();
-        this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+        this.time.addEvent({delay: 20, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
     }
 
     private updateResponse(): void {
@@ -481,7 +487,7 @@ export class GameScene extends Phaser.Scene {
             } else if (this.currentGameStep === GameStep.OrderTaken || this.currentGameStep === GameStep.ItemInvestigated) {
                 this.updateEquipment();
                 let dialogLength = this.responseDialog.createNeededItemsText(this.majster.repairedItem.neededItems);
-                this.time.addEvent({delay: 50, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
+                this.time.addEvent({delay: 20, callback: this.updateResponse, callbackScope: this, repeat: dialogLength, args: [dialogLength] });
             }
         }
     }
@@ -522,5 +528,22 @@ export class GameScene extends Phaser.Scene {
                 this.equipmentText[i].setText(`${i + 1}. ......................`);
             }
         }
+    }
+
+    private updatePieniazki(): void {
+        let value = this.majster.repairedItem.neededItems.length * 20;
+
+        if (this.majster.repairedItem.isDestroyed) {
+            value *= -1;
+        }
+
+        this.pieniazki += value;
+
+        if (this.pieniazki < 0){
+            this.pieniazkiText.setColor("red");
+        } else {
+            this.pieniazkiText.setColor("green");
+        }
+        this.pieniazkiText.setText(`${this.pieniazki} złotych`);
     }
 };

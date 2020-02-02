@@ -219,11 +219,30 @@ export class HammeringScene extends Phaser.Scene {
     }
 
     private exit(): void {
+        if (this.checkIfItemIsDestroyed()) {
+            this.majster.repairedItem.isDestroyed = true;
+        }
+
         let gameScene: any = this.scene.get('GameScene');
         this.majster.clearEquipment();
         gameScene.currentGameWindow = GameWindowFocus.Majster;
         gameScene.currentGameStep = GameStep.OrderReady;
         gameScene.updateEquipment();
         this.scene.stop();
+    }
+
+    private checkIfItemIsDestroyed(): boolean {
+        if (this.majster.equipment.length !== this.majster.repairedItem.neededItems.length) {
+            return true;
+        }
+
+        for (var item of this.majster.equipment) {
+            if (!this.majster.repairedItem.neededItems.some(neededItem => neededItem === item)) 
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
