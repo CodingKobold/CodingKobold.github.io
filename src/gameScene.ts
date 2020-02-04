@@ -296,10 +296,6 @@ export class GameScene extends Phaser.Scene {
         this.load.image('floor-3', 'images/wall/floor-3.png');
         this.load.image('floor-4', 'images/wall/floor-4.png');
 
-        this.load.image('carpet-1', 'images/furniture/dywan1.png');
-        this.load.image('carpet-2', 'images/furniture/dywan2.png');
-        this.load.image('carpet-3', 'images/furniture/dywan3.png');
-
         this.load.image('computer', 'images/furniture/komputer.png');
         this.load.image('plant', 'images/furniture/kwiatek.png');
         this.load.image('low-table', 'images/furniture/niski-stol.png');
@@ -314,13 +310,11 @@ export class GameScene extends Phaser.Scene {
         this.load.image('mini-wardrobe', 'images/furniture/szafeczka.png');
         this.load.image('mini-wardrobe', 'images/furniture/szafeczka2.png');
 
-        this.load.image('c-corner', 'images/carpets/corner.png');
-        this.load.image('c-center', 'images/carpets/center.png');
-        this.load.image('c-center2', 'images/carpets/center2.png');
-
-        this.load.image('c-corner-d2', 'images/carpets/corner-d2.png');
-        this.load.image('c-center-d2', 'images/carpets/center-d2.png');
-        this.load.image('c-center2-d2', 'images/carpets/center2-d2.png');
+        for (var i=1; i<=2; i++){
+            this.load.image('carpet-corner-' + i, 'images/carpets/corner-' + i + '.png');
+            this.load.image('carpet-edge-' + i, 'images/carpets/edge-' + i + '.png');
+            this.load.image('carpet-center-' + i, 'images/carpets/center-' + i + '.png');
+        }
 
         this.load.image('kwiatek', 'images/furniture/kwiatek.png');
         this.load.image('cat', 'images/cat.png');
@@ -343,70 +337,9 @@ export class GameScene extends Phaser.Scene {
             }
         }
 
-        
-        //dywany
-        //drugi
-        //dół
-        this.add.image(500, 432, "c-corner-d2").setAngle(-90);
-        this.add.image(660, 432, "c-corner-d2").setAngle(180);
-        for (var i=516; i<=644; i+=16 ){
-            this.add.image(i, 432, "c-center-d2").setAngle(180);
-        }
-        //lewy
-        this.add.image(500, 336, "c-corner-d2");
-        for (var i=416; i>=352; i-=16){
-            this.add.image(500, i, "c-center-d2").setAngle(-90);
-        }
-        //góra
-        this.add.image(660, 336, "c-corner-d2").setAngle(90);
-        for (var i=516; i<=644; i+=16 ){
-            this.add.image(i, 336, "c-center-d2");
-        }
-        //prawy
-        for (var i=416; i>=352; i-=16){
-            this.add.image(660, i, "c-center-d2").setAngle(90);
-        }
-        //środek
-        for (var j=352; j<=416; j+=16){
-            for (var i=516; i<=644; i+=16){
-                this.add.image(i, j, "c-center2-d2");
-            }
-        }
-        
-        
+        this.createCarpet(192, 78, 256, 176, 1);
+        this.createCarpet(525, 336, 128, 112, 2)
 
-        //pierwszy
-        //d-góra
-        this.add.image(192, 78, "c-corner");
-        this.add.image(448, 78, "c-corner").setAngle(90);
-        for (var i=208; i<=432; i+=16){
-            this.add.image(i, 78, "c-center");
-        }
-        //lewy
-        for (var i=94; i<=174; i+=16){
-            this.add.image(192, i, "c-center").setAngle(-90);
-        }
-        //prawy
-        for (var i=94; i<=174; i+=16){
-            this.add.image(448, i, "c-center").setAngle(90);
-        }
-        //-d-dół   
-        this.add.image(192, 190, "c-corner").setAngle(-90);
-        this.add.image(448, 190, "c-corner").setAngle(180);
-        for (var i=208; i<=432; i+=16){
-            this.add.image(i, 190, "c-center").setAngle(180);
-        }
-        //środek
-        for (var j=94; j<=174; j+=16){
-            for (var i=208; i<=432; i+=16){
-                this.add.image(i, j, "c-center2");
-            }
-        }
-
-        this.walls.create(560, 35, 'c-center2-d2');
-        this.walls.create(560, 375, 'c-center2-d2');
-        this.walls.create(580, 350, 'c-center2-d2');
-        this.walls.create(580, 375, 'c-center2-d2');
         this.walls.create(580, 375, "cat").setDisplaySize(50,50);
         this.walls.create(230, 200, "kwiatek");
 
@@ -516,6 +449,35 @@ export class GameScene extends Phaser.Scene {
         this.walls.create(550, 100, "computer").setScale(1.5,1.5);
         this.walls.create(300, 415, "kwiatek");
         this.walls.create(450, 415, "kwiatek");
+    }
+
+    private createCarpet(posX: number, posY: number, width: number, height: number, type: number){
+        //left-top-corner & right-top-corner
+        this.add.image(posX, posY, "carpet-corner-" + type);
+        this.add.image(posX + width - 16, posY, "carpet-corner-" + type).setAngle(90);
+
+        //left-bottom-corner & right-bottom-corner
+        this.add.image(posX, posY + height - 16, "carpet-corner-" + type).setAngle(-90);
+        this.add.image(posX + width - 16, posY + height - 16, "carpet-corner-" + type).setAngle(180);
+
+        //top-edge & bottom-edge
+        for (var i = posX + 16; i <= posX + width - 32; i += 16){
+            this.add.image(i, posY, "carpet-edge-" + type);
+            this.add.image(i, posY + height - 16, "carpet-edge-" + type).setAngle(180);
+        }
+
+        //left-edge & right-edge
+        for (var i = posY + 16; i <= posY + height - 32; i += 16){
+            this.add.image(posX, i, "carpet-edge-" + type).setAngle(-90);
+            this.add.image(posX + width - 16, i, "carpet-edge-" + type).setAngle(90);
+        }
+
+        //center
+        for (var i = posX + 16; i <= posX + width - 32; i += 16){
+            for (var y = posY + 16; y <= posY + height - 32; y += 16){
+                this.add.image(i, y, "carpet-center-" + type);
+            }  
+        }
     }
 
     private prepareRoomItems() {
