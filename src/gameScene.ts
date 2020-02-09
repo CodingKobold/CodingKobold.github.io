@@ -103,7 +103,7 @@ export class GameScene extends Phaser.Scene {
         // TODO: Remove when not needed anymore
         this.prepareGameShapes();
         this.drawGrassInitial();
-        this.drawRoomInitial();
+        this.drawRoomInitial(160, 32, 736, 448);
         this.prepareInput();
         this.prepareMajster();
         this.prepareRoomItems();
@@ -273,28 +273,25 @@ export class GameScene extends Phaser.Scene {
     }
 
     private loadRoomAssets() {
-        this.load.image('wall-left-top-corner', 'images/wall/left-top-corner.png');
-        this.load.image('wall-right-top-corner', 'images/wall/right-top-corner.png');
-        this.load.image('wall-left', 'images/wall/left.png');
-        this.load.image('wall-top', 'images/wall/top.png');
-        this.load.image('wall-bottom', 'images/wall/bottom.png');
-        this.load.image('wall-bottom-small', 'images/wall/bottom-small.png');
-        this.load.image('wall-middle-right-corner', 'images/wall/middle-right-corner.png');
-        this.load.image('wall-middle-left-corner', 'images/wall/middle-left-corner.png');
+        this.load.image('wall-corner', 'images/wall/corner.png');
+        this.load.image('wall-middle', 'images/wall/middle.png'); 
 
-        this.load.image('wall-brick-center', 'images/wall/brick-center.png');
-        this.load.image('wall-right-small', 'images/wall/right-small.png');
-        this.load.image('wall-brick-left', 'images/wall/brick-left.png');
-        this.load.image('wall-brick-right', 'images/wall/brick-right.png');
-        this.load.image('wall-brick-right-center', 'images/wall/brick-right-center.png');
+        this.load.image('brick-left-corner', 'images/wall/brick-left-corner.png');
+        this.load.image('brick-right-corner', 'images/wall/brick-right-corner.png');
+        this.load.image('brick-middle', 'images/wall/brick-middle.png');
+        
+        for (var i = 1; i <= 4; i++){
+            this.load.image('floor-' + i, 'images/wall/floor-' + i + '.png');
+        }
+
+        for (var i = 1; i <= 2; i++){
+            this.load.image('carpet-corner-' + i, 'images/carpets/corner-' + i + '.png');
+            this.load.image('carpet-edge-' + i, 'images/carpets/edge-' + i + '.png');
+            this.load.image('carpet-center-' + i, 'images/carpets/center-' + i + '.png');
+        }
 
         this.load.image('wall-window1', 'images/wall/window1.png');
         this.load.image('wall-door', 'images/wall/door.png');
-
-        this.load.image('floor-1', 'images/wall/floor1.png');
-        this.load.image('floor-2', 'images/wall/floor-2.png');
-        this.load.image('floor-3', 'images/wall/floor-3.png');
-        this.load.image('floor-4', 'images/wall/floor-4.png');
 
         this.load.image('computer', 'images/furniture/komputer.png');
         this.load.image('plant', 'images/furniture/kwiatek.png');
@@ -310,145 +307,86 @@ export class GameScene extends Phaser.Scene {
         this.load.image('mini-wardrobe', 'images/furniture/szafeczka.png');
         this.load.image('mini-wardrobe', 'images/furniture/szafeczka2.png');
 
-        for (var i=1; i<=2; i++){
-            this.load.image('carpet-corner-' + i, 'images/carpets/corner-' + i + '.png');
-            this.load.image('carpet-edge-' + i, 'images/carpets/edge-' + i + '.png');
-            this.load.image('carpet-center-' + i, 'images/carpets/center-' + i + '.png');
-        }
-
         this.load.image('kwiatek', 'images/furniture/kwiatek.png');
         this.load.image('cat', 'images/cat.png');
     }
 
-    private drawRoomInitial() {
+    private drawRoomInitial(posX: number, posY: number, width: number, height: number) {
         this.walls = this.physics.add.staticGroup();
         this.entrance = this.physics.add.staticGroup();
 
-        var topStartPoint = 24;
-        var bottomStopPoint = 480;
-        var leftStartPoint = 168;
-        var rightStopPoint = 856; //16 * x +12
+        var entrancePos = 96;
+        var entranceLenght = 256;
 
-        //podłoga
-        for (var j = topStartPoint + 53; j <= bottomStopPoint - 10; j += 16) {
-            for (var i = leftStartPoint + 22; i <= rightStopPoint - 10; i += 16) {
+        //left-top-corner & right-top-corner
+        this.walls.create(posX, posY, "wall-corner");
+        this.walls.create(posX + width - 32, posY, "wall-corner").setAngle(90);
+
+        //left-bottom-corner & right-bottom-corner
+        this.walls.create(posX, posY + height - 32, "wall-corner").setAngle(-90);
+        this.walls.create(posX + width - 32, posY + height - 32, "wall-corner").setAngle(180);
+
+        //left-outside-brick-corner & right-outside-brick-corner
+        this.walls.create(posX, posY + height, "brick-left-corner"));
+        this.walls.create(posX + width - 32, posY + height, "brick-right-corner");
+
+        //top-edge & brick inside & bottom-edge & brick outside
+        for (var i = posX + 32; i <= posX + width - 64; i += 32){
+            this.walls.create(i, posY, "wall-middle");
+            this.walls.create(i, posY + 32, "brick-middle");
+            if (i <= posX + entrancePos || i >= posX + entrancePos + entranceLenght) {
+                this.walls.create(i, posY + height - 32, "wall-middle").setAngle(180);
+                this.walls.create(i, posY + height, "brick-middle");
+            }
+        }
+        
+        //left-edge & right-edge 
+        for (var i = posY + 32; i <= posY + height - 64; i += 32){
+            this.walls.create(posX, i, "wall-middle").setAngle(90);
+            this.walls.create(posX + width - 32, i, "wall-middle").setAngle(-90);
+        }  
+
+        //entrance-left-top-corner & entrance-right-top-corner
+        this.walls.create(posX + entrancePos + 32, posY + height - 32, "wall-corner").setAngle(90);
+        this.walls.create(posX + entrancePos + entranceLenght - 32, posY + height - 32, "wall-corner");
+
+        //entrance-left-bottom-corner & entrance-right-bottom-corner
+        this.walls.create(posX + entrancePos + 32, posY + height + 32, "wall-corner").setAngle(-90);
+        this.walls.create(posX + entrancePos + entranceLenght - 32, posY + height + 32, "wall-corner").setAngle(180);
+
+        //entrance-left-outside-brick-corner & entrance-right-outside-brick-corner
+        this.walls.create(posX + entrancePos + 32, posY + height + 64, "brick-left-corner");
+        this.walls.create(posX + entrancePos + entranceLenght - 32, posY + height + 64, "brick-right-corner");
+
+        //entrance-left-edge & entrance-right-edge
+        this.walls.create(posX + entrancePos + 32, posY + height, "wall-middle").setAngle(90);
+        this.walls.create(posX + entrancePos + entranceLenght - 32, posY + height, "wall-middle").setAngle(90);
+
+        //entrance-bottom-edge & brick-outside
+        for(var i = posX + entrancePos + 64; i <= posX + entrancePos + entranceLenght - 64; i += 32 ){
+            this.walls.create(i, posY + height + 32, "wall-middle");
+            this.walls.create(i, posY + height + 64, "brick-middle");
+        } 
+        
+        //entrance-floor
+        for (var i = posX + entrancePos + 56; i <= posX + entrancePos + entranceLenght - 56  ; i += 16 ){
+            for (var j = posY + height - 40; j <= posY + height + 16; j += 16){
+                this.entrance.create(i, j, "floor-1");
+            }      
+        }
+        
+        //floor
+        for (var i = posX + 24; i <= posX + width - 48; i += 16){
+            for (var j = posY + 56; j <= posY + height - 48; j += 16){
                 var randNumber = Math.floor(Math.random() * 3) + 2;
                 this.add.image(i, j, "floor-" + randNumber);
-            }
+            }          
         }
 
-        this.createCarpet(192, 78, 256, 176, 1);
-        this.createCarpet(525, 336, 128, 112, 2)
+        this.createCarpet(192, 94, 256, 144, 1);
+        this.createCarpet(525, 336, 128, 96, 2);
 
         this.walls.create(580, 375, "cat").setDisplaySize(50,50);
-        this.walls.create(230, 200, "kwiatek");
-
-        //środkowy murek
-        for (var i = leftStartPoint + 27; i <= rightStopPoint - 16; i += 16) {
-            this.walls.create(i, topStartPoint + 30, "wall-brick-center");
-        }
-
-        //górna ściana
-        for (var i = leftStartPoint + 16; i <= rightStopPoint - 16; i += 16) {
-            this.walls.create(i, topStartPoint, "wall-top");
-        }
-
-        for (var i = leftStartPoint + 22; i <= rightStopPoint - 8; i += 16) {
-            this.walls.create(i, topStartPoint + 12, "wall-bottom-small");
-        }
-
-        //lewa ściana
-        for (var i = topStartPoint + 8; i <= bottomStopPoint - 16; i += 16) {
-            this.walls.create(leftStartPoint, i, "wall-left");
-        }
-
-        for (var i = topStartPoint + 22; i <= bottomStopPoint - 16; i += 16) {
-            this.walls.create(leftStartPoint + 11, i, "wall-right-small");
-        }
-
-        //prawa ściana
-        for (var i = topStartPoint + 16; i <= bottomStopPoint - 32; i += 16) {
-            this.walls.create(rightStopPoint, i, "wall-brick-right-center");
-        }
-
-        for (var i = topStartPoint + 16; i <= bottomStopPoint - 40; i += 16) {
-            this.walls.create(rightStopPoint - 11, i, "wall-right-small").setAngle(180);
-        }
-
-        //dolna ściana
-        for (var i = leftStartPoint + 16; i <= rightStopPoint - 16; i += 16) {
-            if (i <= leftStartPoint + 144 || i >= leftStartPoint + 272) {
-                this.walls.create(i, bottomStopPoint - 24, "wall-top").setAngle(180);
-                this.walls.create(i, bottomStopPoint - 36, "wall-bottom-small").setAngle(180);
-            }
-        }
-
-        // //narożniki zewnętrzne i wewnętrzne
-        this.walls.create(leftStartPoint + 11, topStartPoint + 12, "wall-middle-right-corner");
-        this.walls.create(rightStopPoint - 11, topStartPoint + 12, "wall-middle-left-corner");
-        this.walls.create(leftStartPoint + 11, bottomStopPoint - 36, "wall-middle-left-corner").setAngle(180);
-        this.walls.create(rightStopPoint - 11, bottomStopPoint - 36, "wall-middle-right-corner").setAngle(180);
-
-        this.walls.create(leftStartPoint, topStartPoint, "wall-left-top-corner");
-        this.walls.create(rightStopPoint, topStartPoint, "wall-right-top-corner");
-        this.walls.create(rightStopPoint, bottomStopPoint - 24, "wall-left-top-corner").setAngle(180);
-        this.walls.create(leftStartPoint, bottomStopPoint - 24, "wall-right-top-corner").setAngle(180);
-
-        //dolny murek
-        this.walls.create(leftStartPoint, bottomStopPoint, "wall-brick-left");
-        this.walls.create(rightStopPoint, bottomStopPoint, "wall-brick-right");
-
-        for (var i = leftStartPoint + 16; i <= rightStopPoint - 16; i += 16) {
-            if (i <= leftStartPoint + 128 || i >= leftStartPoint + 272) {
-                this.walls.create(i, bottomStopPoint, "wall-brick-center");
-            }
-        }
-
-        //okna
-        this.add.image(leftStartPoint + 64, bottomStopPoint - 4, "wall-window1");
-
-        //wejście
-        var doorStartPointTop = 539; //520
-        var doorStartPointLeft = 300;
-        var doorAreaLenght = doorStartPointLeft + 128;
-
-        //wejście-podłoga!!!
-        for (var j = 42; j <= 90; j += 16) {
-            for (var i = 16; i <= 128; i += 16) {
-                this.entrance.create(doorStartPointLeft + i, doorStartPointTop - j, "floor-1");
-            }
-        }
-
-        this.walls.create(doorStartPointLeft, doorStartPointTop, "wall-brick-left");
-        this.walls.create(doorAreaLenght + 16, doorStartPointTop, "wall-brick-right");
-        for (var i = doorStartPointLeft + 16; i <= doorAreaLenght; i += 16) {
-            this.walls.create(i, doorStartPointTop, "wall-brick-center");
-        }
-
-        this.walls.create(doorStartPointLeft, doorStartPointTop - 24, "wall-right-top-corner").setAngle(180);
-        this.walls.create(doorAreaLenght + 16, doorStartPointTop - 24, "wall-left-top-corner").setAngle(180);
-
-        for (var i = doorStartPointLeft + 16; i <= doorAreaLenght; i += 16) {
-            this.walls.create(i, doorStartPointTop - 24, "wall-top").setAngle(180);
-            this.walls.create(i, doorStartPointTop - 36, "wall-bottom-small").setAngle(180);
-        }
-
-        this.add.image(doorStartPointLeft + doorAreaLenght / 6, doorStartPointTop - 2, "wall-door");
-
-        for (var i = 40; i <= 72; i += 16) {
-            this.walls.create(doorStartPointLeft, doorStartPointTop - i, "wall-brick-right-center").setAngle(180);
-            this.walls.create(doorStartPointLeft + 11, doorStartPointTop - i, "wall-right-small");
-
-            this.walls.create(doorAreaLenght + 16, doorStartPointTop - i, "wall-brick-right-center");
-            this.walls.create(doorAreaLenght + 5, doorStartPointTop - i, "wall-right-small").setAngle(180);
-        }
-
-        this.walls.create(doorStartPointLeft + 11, doorStartPointTop - 88, "wall-right-small");
-        this.walls.create(doorAreaLenght + 5, doorStartPointTop - 88, "wall-right-small").setAngle(180);
-
-        this.walls.create(550, 100, "computer").setScale(1.5,1.5);
-        this.walls.create(300, 415, "kwiatek");
-        this.walls.create(450, 415, "kwiatek");
     }
 
     private createCarpet(posX: number, posY: number, width: number, height: number, type: number){
